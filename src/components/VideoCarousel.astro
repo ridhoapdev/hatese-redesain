@@ -1,0 +1,240 @@
+---
+interface VideoItem {
+  id: string;
+  name: string;
+  city?: string;
+  poster: string;
+  videoUrl: string;
+}
+
+interface Props {
+  videos: VideoItem[];
+}
+
+const { videos = [] } = Astro.props;
+---
+
+<!-- Menyimpan data JSON sebagai fallback jika diperlukan -->
+<script type="application/json" id="video-carousel-data" set:html={JSON.stringify(videos)} />
+
+<div
+  x-data={`videoCarousel(${JSON.stringify(videos)})`}
+  x-cloak
+  @keydown.escape.window="closeModal()"
+  @keydown.arrow-right.window="modalOpen && next()"
+  @keydown.arrow-left.window="modalOpen && prev()"
+>
+  <!-- Empty State (Jika tidak ada video) -->
+  <template x-if="!videos || videos.length === 0">
+    <div class="text-center py-12 bg-mist/40 rounded-[--radius-card]">
+      <p class="text-ink/60">Video testimoni sedang disiapkan. Silakan cek kembali nanti.</p>
+    </div>
+  </template>
+
+  <!-- Carousel Horizontal -->
+  <template x-if="videos && videos.length > 0">
+    <div class="relative">
+      <div class="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-thin">
+        <template x-for="video in videos" :key="video.id">
+          <button
+            type="button"
+            @click="openModal(video.id)"
+            class="group flex-shrink-0 w-48 sm:w-56 snap-start text-left focus-visible:outline-2 focus-visible:outline-gold focus-visible:outline-offset-2 rounded-[--radius-card]"
+          >
+            <!-- Poster 9:16 -->
+            <div class="relative aspect-[9/16] rounded-[--radius-card] overflow-hidden bg-mist">
+              <template x-if="video.poster">
+                <img
+                  :src="video.poster"
+                  :alt="`Thumbnail video testimoni ${video.name}`"
+                  loading="lazy"
+                  class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+              </template>
+              <template x-if="!video.poster">
+                <div class="w-full h-full bg-gradient-to-br from-indigo/30 to-mist flex items-center justify-center">
+                  <svg class="w-16 h-16 text-indigo/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                </div>
+              </template>
+
+              <!-- Play Icon -->
+              <span class="absolute inset-0 flex items-center justify-center">
+                <span class="w-12 h-12 rounded-full bg-vermillion flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                  <svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </span>
+              </span>
+            </div>
+
+            <!-- Caption -->
+            <div class="mt-3">
+              <p class="font-display text-sm font-medium text-ink truncate" x-text="video.name"></p>
+              <template x-if="video.city">
+                <p class="text-xs text-ink/60 truncate" x-text="video.city"></p>
+              </template>
+            </div>
+          </button>
+        </template>
+      </div>
+
+      <p class="mt-3 text-xs text-ink/50 text-center sm:hidden">
+        Geser untuk melihat video lainnya →
+      </p>
+    </div>
+  </template>
+
+  <!-- Modal Lightbox -->
+  <div
+    x-show="modalOpen"
+    x-cloak
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition ease-in duration-150"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    class="fixed inset-0 z-[100] flex items-center justify-center p-4"
+    style="background-color: rgba(20,26,41,.85);"
+    @click.self="closeModal()"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Pemutar video testimoni"
+  >
+    <!-- Tombol Tutup -->
+    <button
+      type="button"
+      @click="closeModal()"
+      class="absolute top-4 right-4 z-10 p-2 text-white/80 hover:text-white focus-visible:outline-2 focus-visible:outline-gold rounded-lg"
+      aria-label="Tutup video"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <!-- Tombol Prev -->
+    <button
+      type="button"
+      @click="prev()"
+      class="absolute left-2 sm:left-4 z-10 p-3 text-white/80 hover:text-white focus-visible:outline-2 focus-visible:outline-gold rounded-full bg-ink/40 hover:bg-ink/60 transition-colors"
+      aria-label="Video sebelumnya"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+
+    <!-- Video Container -->
+    <div
+      x-show="modalOpen"
+      x-transition:enter="transition ease-out duration-200"
+      x-transition:enter-start="opacity-0 scale-95"
+      x-transition:enter-end="opacity-100 scale-100"
+      class="relative w-full max-w-sm aspect-[9/16] bg-ink rounded-[--radius-card] overflow-hidden"
+      @click.stop
+    >
+      <template x-for="(video, i) in videos" :key="video.id">
+        <video
+          x-show="i === currentIndex"
+          :src="video.videoUrl"
+          :poster="video.poster || ''"
+          controls
+          playsinline
+          preload="none"
+          class="w-full h-full object-cover"
+        ></video>
+      </template>
+    </div>
+
+    <!-- Tombol Next -->
+    <button
+      type="button"
+      @click="next()"
+      class="absolute right-2 sm:right-4 z-10 p-3 text-white/80 hover:text-white focus-visible:outline-2 focus-visible:outline-gold rounded-full bg-ink/40 hover:bg-ink/60 transition-colors"
+      aria-label="Video selanjutnya"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+  </div>
+</div>
+
+<!-- Script Pendaftaran Alpine Data -->
+<script>
+  import Alpine from 'alpinejs';
+
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('videoCarousel', (initialVideos = []) => ({
+      videos: initialVideos,
+      modalOpen: false,
+      currentIndex: 0,
+
+      init() {
+        // Fallback jika initialVideos kosong, coba baca dari JSON script tag
+        if (!this.videos || this.videos.length === 0) {
+          const scriptEl = document.getElementById('video-carousel-data');
+          if (scriptEl && scriptEl.textContent) {
+            try {
+              this.videos = JSON.parse(scriptEl.textContent);
+            } catch (err) {
+              console.error('Gagal membaca data video JSON:', err);
+            }
+          }
+        }
+      },
+
+      openModal(id) {
+        const index = this.videos.findIndex(v => v.id === id);
+        if (index !== -1) {
+          this.currentIndex = index;
+          this.modalOpen = true;
+          // Putar video otomatis saat modal terbuka
+          this.$nextTick(() => {
+            const currentVideoEl = this.$el.querySelectorAll('video')[this.currentIndex];
+            if (currentVideoEl) currentVideoEl.play();
+          });
+        }
+      },
+
+      closeModal() {
+        this.modalOpen = false;
+        // Hentikan semua video saat modal ditutup
+        const allVideoEls = this.$el.querySelectorAll('video');
+        allVideoEls.forEach(v => {
+          v.pause();
+          v.currentTime = 0;
+        });
+      },
+
+      next() {
+        if (!this.videos.length) return;
+        this.pauseCurrentVideo();
+        this.currentIndex = (this.currentIndex + 1) % this.videos.length;
+        this.playCurrentVideo();
+      },
+
+      prev() {
+        if (!this.videos.length) return;
+        this.pauseCurrentVideo();
+        this.currentIndex = (this.currentIndex - 1 + this.videos.length) % this.videos.length;
+        this.playCurrentVideo();
+      },
+
+      pauseCurrentVideo() {
+        const currentVideoEl = this.$el.querySelectorAll('video')[this.currentIndex];
+        if (currentVideoEl) currentVideoEl.pause();
+      },
+
+      playCurrentVideo() {
+        this.$nextTick(() => {
+          const currentVideoEl = this.$el.querySelectorAll('video')[this.currentIndex];
+          if (currentVideoEl) currentVideoEl.play();
+        });
+      }
+    }));
+  });
+</script>

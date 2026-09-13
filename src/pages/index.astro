@@ -1,17 +1,889 @@
 ---
+// src/pages/index.astro (Beranda, revisi UI/UX Hero & Visual)
+import { getCollection } from "astro:content";
+import * as icons from "lucide-astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Button from "../components/Button.astro";
+import JourneyStepper from "../components/JourneyStepper.astro";
+import TestimonialCard from "../components/TestimonialCard.astro";
+import FaqAccordion from "../components/FaqAccordion.astro";
 
+// ===== Data Statistik =====
+const stats = [
+  { target: 1000, suffix: "+", label: "Siswa Terdaftar" },
+  { target: 100, suffix: "+", label: "Alumni Berangkat ke Jepang" },
+  { target: 10000, suffix: "+", label: "Kuota Kerja Terbuka per Tahun" },
+];
+
+// ===== Kenapa Harus Kerja di Jepang =====
+const whyJapan = [
+  {
+    iconName: "TrendingUp",
+    title: "Peluang Kerja Terbuka Lebar",
+    body: "Jepang kekurangan tenaga kerja usia produktif di berbagai sektor industri, dan terus membuka kuota untuk pekerja asing.",
+  },
+  {
+    iconName: "Users",
+    title: "Belasan Bidang Kerja SSW",
+    body: "Skema SSW mencakup belasan sektor kerja resmi, mulai dari manufaktur, konstruksi, pertanian, sampai perhotelan, jadi peluangnya luas sesuai minatmu.",
+  },
+  {
+    iconName: "Wallet",
+    title: "Gaji Setara hingga ¥350.000/bulan",
+    body: "Setara sekitar Rp35 juta per bulan, jauh di atas rata-rata gaji sektor yang sama di Indonesia.",
+  },
+] as const;
+
+const whyJapanIcons = {
+  TrendingUp: icons.TrendingUp,
+  Users: icons.Users,
+  Wallet: icons.Wallet,
+};
+
+// ===== Fasilitas Gratis =====
+const fasilitas = [
+  {
+    iconName: "Home",
+    title: "Mess/Asrama Gratis",
+    body: "Tempat tinggal gratis selama masa pelatihan untuk siswa kelas offline, supaya bisa fokus belajar tanpa memikirkan biaya hidup.",
+    image: "/images/programs/mess.webp",
+  },
+  {
+    iconName: "Shirt",
+    title: "Kaos & Perlengkapan Kelas",
+    body: "Kaos olahraga dan perlengkapan kelas disediakan tanpa biaya tambahan untuk siswa kelas offline.",
+    image: "/images/programs/Kaos-Olahraga.webp",
+  },
+  {
+    iconName: "BookOpen",
+    title: "Modul & Bank Soal",
+    body: "Materi belajar dan bank soal simulasi ujian JFT-A2/JLPT N4 yang disusun mengikuti standar ujian terbaru.",
+    image: "/images/programs/modul.webp",
+  },
+] as const;
+
+const fasilitasIcons = {
+  Home: icons.Home,
+  Shirt: icons.Shirt,
+  BookOpen: icons.BookOpen,
+};
+
+// ===== Pendampingan Penuh =====
+const layanan = [
+  {
+    iconName: "GraduationCap",
+    title: "Kelas Intensif Bahasa Jepang",
+    body: "Belajar bahasa Jepang dari nol dengan kurikulum terstruktur, pilih jadwal reguler offline atau online via Zoom.",
+    image: "/images/programs/kelas.webp",
+  },
+  {
+    iconName: "ClipboardCheck",
+    title: "Pendampingan Ujian & Interview",
+    body: "Simulasi ujian JFT-A2/SSW dan latihan mensetsu (interview kerja) dengan perusahaan Jepang, didampingi tim HATESE.",
+    image: "/images/programs/pendampingan.webp",
+  },
+  {
+    iconName: "PlaneTakeoff",
+    title: "Matching Job & Keberangkatan",
+    body: "Pencocokan lowongan sesuai bidang, pengurusan dokumen, sampai pendampingan di hari keberangkatan.",
+    image: "/images/programs/pengantaran.webp",
+  },
+] as const;
+
+const layananIcons = {
+  GraduationCap: icons.GraduationCap,
+  ClipboardCheck: icons.ClipboardCheck,
+  PlaneTakeoff: icons.PlaneTakeoff,
+};
+
+// ===== Testimoni dari Content Collections (khusus teks) =====
+const allTestimonials = await getCollection('testimonials');
+
+const textTestimonials = allTestimonials
+  .filter((t) => t.data.type === 'text')
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 4);
+
+// ===== FAQ =====
+const faqCategories = [
+  {
+    name: "Pendaftaran",
+    items: [
+      {
+        question: "Apa syarat utama untuk mendaftar?",
+        answer:
+          "Usia minimal 18 tahun, sehat jasmani dan rohani, serta memiliki kemauan belajar bahasa Jepang dari nol. Tidak diperlukan pengalaman bahasa Jepang sebelumnya.",
+      },
+      {
+        question: "Apakah harus bisa bahasa Jepang dulu?",
+        answer:
+          "Tidak. Kelas kami dirancang untuk pemula total. Anda akan dibimbing dari nol sampai siap mengikuti ujian JFT-A2/JLPT N4.",
+      },
+      {
+        question: "Berapa lama masa pendidikan?",
+        answer:
+          "Program inti berlangsung sekitar 3 bulan kelas intensif, dilanjutkan dengan persiapan ujian dan pendampingan interview.",
+      },
+    ],
+  },
+  {
+    name: "Biaya & Dana Talangan",
+    items: [
+      {
+        question: "Apakah ada dana talangan?",
+        answer:
+          "Ya. HATESE menyediakan skema dana talangan untuk membantu siswa yang terkendala biaya. Detail dan syaratnya akan dijelaskan saat konsultasi.",
+      },
+      {
+        question: "Berapa biaya pendaftaran?",
+        answer:
+          "Investasi belajar mulai dari Rp2 jutaan per bulan selama 3 bulan. Semua rinciannya dijelaskan transparan saat konsultasi, tidak ada biaya tersembunyi.",
+      },
+      {
+        question: "Apakah mess/asrama benar-benar gratis?",
+        answer:
+          "Ya, untuk siswa kelas offline, mess/asrama disediakan gratis selama masa pelatihan supaya bisa fokus belajar.",
+      },
+    ],
+  },
+  {
+    name: "Proses & Keberangkatan",
+    items: [
+      {
+        question: "Apa itu Pra-MCU dan kenapa perlu?",
+        answer:
+          "Pra-MCU (Medical Check-Up) adalah pemeriksaan kesehatan awal untuk memastikan calon siswa memenuhi syarat kesehatan sebelum melanjutkan ke tahap pelatihan dan keberangkatan.",
+      },
+      {
+        question: "Apa itu SSW dan JFT?",
+        answer:
+          "SSW (Specified Skilled Worker) adalah status visa kerja resmi Jepang untuk tenaga kerja terampil. JFT-A2 adalah ujian sertifikasi bahasa Jepang yang menjadi salah satu syaratnya.",
+      },
+      {
+        question: "Apakah HATESE resmi?",
+        answer:
+          "Ya. PT. Harapan Terang Sejahtera terdaftar resmi di Kementerian Hukum dan HAM RI dengan SK No. 0047730.AH.01.01 Tahun 2023.",
+      },
+    ],
+  },
+];
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout
+  title="Wujudkan Kerja di Jepang, Bukan Sekadar Mimpi"
+  description="LPK HATESE membimbingmu dari nol bahasa Jepang sampai siap kerja di Jepang, lengkap dengan pendampingan ujian JFT-A2/SSW, interview, dan keberangkatan."
+>
+  <!-- ============ HERO SECTION (REVISED UI/UX) ============ -->
+  <section class="relative bg-paper overflow-hidden pt-6 pb-14 sm:pb-10 lg:py-6">
+    <!-- Subtle Background Ambient Lighting -->
+    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-tr from-amber-100/40 via-red-100/30 to-indigo-100/30 rounded-full blur-3xl pointer-events-none -z-10" aria-hidden="true"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-12 gap-10 sm:gap-12 lg:gap-8 items-center">
+        
+        <!-- Left Column: Copy & CTAs -->
+        <div class="lg:col-span-7 js-hero-copy text-center lg:text-left">
+          <h1
+            class="font-display text-[2.25rem] leading-[1.15] sm:text-5xl lg:text-6xl font-bold tracking-tight sm:leading-[1.1] text-ink"
+          >
+            Wujudkan Kerja di Jepang, <br class="hidden sm:block" />
+            <span class="text-indigo">Bukan Sekadar Mimpi.</span>
+          </h1>
+
+          <p class="mt-5 sm:mt-6 text-base sm:text-lg text-slate-600 leading-relaxed max-w-[54ch] mx-auto lg:mx-0">
+            HATESE mendampingi kamu belajar bahasa Jepang dari nol sampai siap
+            kerja, termasuk persiapan ujian JFT-A2/SSW, interview, hingga proses keberangkatan resmi.
+          </p>
+
+          <!-- Hero Action CTA Group -->
+          <div class="mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4 js-hero-cta">
+            <a
+              href="/daftar"
+              class="group inline-flex items-center justify-center gap-2.5 bg-vermillion hover:bg-vermillion-hover text-white px-7 py-3.5 rounded-xl text-base font-bold shadow-lg shadow-vermillion/25 hover:shadow-xl hover:shadow-vermillion/35 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
+            >
+              <span>Konsultasi Sekarang</span>
+              <icons.ArrowRight class="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" stroke-width={2.5} />
+            </a>
+
+            <a
+              href="/program"
+              class="inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-slate-700 hover:text-indigo border border-slate-300 px-6 py-3.5 rounded-xl text-base font-semibold shadow-sm hover:shadow active:scale-[0.99] transition-all duration-150"
+            >
+              <span>Lihat Program</span>
+            </a>
+          </div>
+
+          <!-- Trust Badge Footer -->
+          <div class="mt-8 pt-6 border-t border-slate-200/80 flex flex-wrap items-center justify-center lg:justify-start gap-4 text-xs sm:text-sm font-medium text-slate-600">
+            <div class="flex items-center gap-2 text-left">
+              <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                <icons.Check class="w-4 h-4" stroke-width={3} />
+              </span>
+              <span>Terdaftar Resmi Kemenkumham RI (SK No. 0047730.AH.01.01)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Hero Visual Graphic (Refined Uncropped Presentation) -->
+        <div class="lg:col-span-5 js-hero-image relative flex items-center justify-center px-6 sm:px-0">
+          
+          <!-- Soft Radial Glow Background Behind Subject -->
+          <div class="absolute inset-0 bg-gradient-to-tr from-amber-300/30 via-red-200/20 to-indigo-200/30 rounded-full blur-2xl scale-95 sm:scale-105 pointer-events-none -z-10" aria-hidden="true"></div>
+
+          <!-- Hero Image Showcase Wrapper (Clean Floating Frame, No Clipping Box) -->
+          <div class="relative w-full max-w-[280px] sm:max-w-md lg:max-w-none mx-auto">
+            
+            <img
+              src="/images/hero.webp"
+              alt="Siswa HATESE bersiap kerja di Jepang"
+              class="w-full h-auto max-h-[380px] sm:max-h-[540px] object-contain mx-auto drop-shadow-2xl transition-transform duration-500 hover:scale-[1.01]"
+              loading="eager"
+              onerror="this.onerror=null; this.src='https://placehold.co/500x600/FAF9F6/1D3557?text=Visual+HATESE';"
+            />
+
+            <!-- Top Floating Route Chip -->
+            <div
+              class="absolute top-2 right-0 sm:top-6 sm:right-4 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-xl sm:rounded-2xl px-2.5 py-1.5 sm:px-4 sm:py-2.5 shadow-xl flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-bold text-slate-800 transition-transform hover:scale-105"
+            >
+              <span class="flex items-center gap-1 sm:gap-1.5">
+                <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500 animate-pulse"></span>
+                Indonesia
+              </span>
+              <icons.ArrowRight class="w-3 h-3 sm:w-4 sm:h-4 text-vermillion" stroke-width={2.5} />
+              <span class="text-indigo">Jepang</span>
+            </div>
+
+            <!-- Bottom Floating Trust Feature Chip -->
+            <div
+              class="absolute -bottom-4 left-0 sm:bottom-4 sm:left-2 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-xl sm:rounded-2xl px-2.5 py-2 sm:px-4 sm:py-3 shadow-xl flex items-center gap-2 sm:gap-3 text-xs text-slate-700 transition-transform hover:scale-105 max-w-[210px] sm:max-w-none"
+            >
+              <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-vermillion/10 text-vermillion flex items-center justify-center shrink-0">
+                <icons.Award class="w-4 h-4 sm:w-5 sm:h-5" stroke-width={2} />
+              </div>
+              <div>
+                <p class="font-bold text-indigo text-[11px] sm:text-xs">Jaminan Bimbingan</p>
+                <p class="text-[10px] sm:text-[11px] text-slate-500 leading-snug">Dari Pemula Hingga Lolos Job Match</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LEGALITAS & KEPERCAYAAN ============ -->
+  <section class="bg-indigo text-paper">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <!-- Kolom gambar -->
+        <div class="reveal relative order-2 lg:order-1">
+          <div
+            class="aspect-[4/3] rounded-2xl overflow-hidden bg-indigo-deep shadow-xl border border-white/10"
+          >
+            <img
+              src="/images/tentang/tentang-kami.webp"
+              alt="Suasana kelas HATESE, siswa belajar bahasa Jepang"
+              loading="lazy"
+              class="w-full h-full object-cover"
+              onerror="this.onerror=null; this.src='https://placehold.co/600x450/14253E/FFFFFF?text=Suasana+Kelas+HATESE';"
+            />
+          </div>
+
+          <!-- Badge legalitas -->
+          <div
+            class="absolute -bottom-4 -right-4 lg:-bottom-6 lg:-right-6 bg-paper text-ink rounded-2xl px-5 py-4 shadow-xl border border-slate-200/60 max-w-[260px]"
+          >
+            <div class="flex items-center gap-3">
+              <span
+                class="shrink-0 w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center"
+              >
+                <svg
+                  class="w-5 h-5 text-emerald-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                  ></path>
+                </svg>
+              </span>
+              <div>
+                <p class="text-xs text-ink/60 font-medium">PT. Harapan Terang Sejahtera</p>
+                <p class="font-display text-sm font-bold text-ink">
+                  Berdiri Sejak 2024
+                </p>
+                <p class="text-[11px] text-ink/50 mt-0.5">
+                  Berbasis di Kota Cirebon
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kolom teks -->
+        <div class="reveal order-1 lg:order-2">
+          <div
+            class="flex items-center gap-2 text-sm font-medium text-amber-300 mb-4"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+              ></path>
+            </svg>
+            <span>Lembaga Resmi & Terpercaya</span>
+          </div>
+
+          <h2
+            class="font-display text-3xl lg:text-4xl font-semibold leading-tight text-white"
+          >
+            Legalitas yang Bisa Kamu Cek Sendiri, <br class="hidden sm:block" />
+            <span class="text-amber-300">Bukan Sekadar Klaim di Website.</span>
+          </h2>
+
+          <p class="mt-6 text-lg text-paper/80 leading-relaxed max-w-[60ch]">
+            PT. Harapan Terang Sejahtera berdiri 3 Juli 2024 di Kota Cirebon,
+            terdaftar resmi di Kementerian Hukum dan HAM RI dengan SK No.
+            0047730.AH.01.01 Tahun 2023.
+          </p>
+
+          <p class="mt-4 text-base text-paper/70 leading-relaxed max-w-[60ch]">
+            Nomor SK ini bisa dicek langsung di sistem resmi Kemenkumham.
+            Program kami membimbing siswa dari nol bahasa Jepang sampai siap
+            bekerja, dengan tiga jaminan utama:
+          </p>
+
+          <ul class="mt-8 space-y-3">
+            <li class="flex items-start gap-3">
+              <svg
+                class="w-5 h-5 text-amber-300 shrink-0 mt-0.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-paper/90">Sertifikat JFT-A2 / JLPT N4</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg
+                class="w-5 h-5 text-amber-300 shrink-0 mt-0.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-paper/90"
+                >Sertifikat SSW (Specified Skilled Worker)</span
+              >
+            </li>
+            <li class="flex items-start gap-3">
+              <svg
+                class="w-5 h-5 text-amber-300 shrink-0 mt-0.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-paper/90">Penempatan kerja resmi di Jepang</span>
+            </li>
+          </ul>
+
+          <a
+            href="/tentang"
+            class="mt-8 inline-flex items-center gap-1.5 text-amber-300 font-medium text-sm hover:gap-2.5 transition-all"
+          >
+            Selengkapnya tentang kami
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Statistik -->
+      <div
+        class="reveal-group mt-16 lg:mt-20 grid grid-cols-1 sm:grid-cols-3 gap-8 lg:gap-12 pt-8 lg:pt-12 border-t border-paper/15"
+      >
+        {
+          stats.map((stat) => (
+            <div class="reveal-item text-center sm:text-left">
+              <p
+                class="counter font-display text-4xl lg:text-5xl font-bold text-amber-300"
+                data-counter-target={stat.target}
+                data-counter-suffix={stat.suffix}
+              >
+                0{stat.suffix}
+              </p>
+              <p class="mt-2 text-sm lg:text-base text-paper/80 font-medium">
+                {stat.label}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ KENAPA HARUS KERJA DI JEPANG ============ -->
+  <section class="bg-paper">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+      <div class="reveal max-w-2xl mb-10 lg:mb-12">
+        <h2 class="font-display text-3xl lg:text-4xl font-semibold text-ink">
+          Kenapa Harus Kerja di Jepang?
+        </h2>
+        <p class="mt-4 text-lg text-ink/70 max-w-[60ch]">
+          Kerja di Jepang membuka jalan menuju masa depan yang lebih terjamin,
+          baik dari sisi administratif maupun pendapatan.
+        </p>
+      </div>
+
+      <div class="reveal-group grid lg:grid-cols-5 gap-5 lg:gap-6">
+        <!-- Featured Card: Gaji (kartu utama, bento asimetris) -->
+        <div class="reveal-item group relative lg:col-span-3 overflow-hidden rounded-2xl bg-indigo text-paper p-7 sm:p-8 lg:p-10 shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+          <div
+            class="absolute -right-16 -top-16 w-64 h-64 bg-amber-400/10 rounded-full blur-3xl group-hover:bg-amber-400/20 group-hover:scale-110 transition-all duration-500"
+            aria-hidden="true"
+          ></div>
+          <div class="relative">
+            <span class="inline-flex items-center justify-center w-12 h-12 lg:w-14 lg:h-14 rounded-xl lg:rounded-2xl bg-amber-400/15 text-amber-300 group-hover:bg-amber-400 group-hover:text-indigo group-hover:scale-110 group-hover:-rotate-3 transition-all duration-300">
+              <icons.Wallet class="w-6 h-6 lg:w-7 lg:h-7" stroke-width={1.75} />
+            </span>
+            <p class="mt-6 font-display text-4xl sm:text-5xl font-bold text-amber-300 leading-none">
+              <span class="counter" data-counter-target="350000" data-counter-prefix="¥">¥0</span><span class="text-lg sm:text-xl font-semibold text-paper/60">/bulan</span>
+            </p>
+            <h3 class="mt-4 font-display text-xl lg:text-2xl font-bold text-paper">
+              Gaji Setara hingga ¥350.000/bulan
+            </h3>
+            <p class="mt-3 text-sm lg:text-base text-paper/75 leading-relaxed max-w-[46ch]">
+              Setara sekitar Rp35 juta per bulan, jauh di atas rata-rata gaji sektor yang sama di Indonesia.
+            </p>
+          </div>
+        </div>
+
+        <!-- Kartu pendamping (stacked) -->
+        <div class="lg:col-span-2 flex flex-col gap-5 lg:gap-6">
+          {
+            whyJapan
+              .filter((item) => item.iconName !== "Wallet")
+              .map((item) => {
+                const IconComponent = whyJapanIcons[item.iconName] ?? icons.Star;
+                return (
+                  <div class="reveal-item group relative flex-1 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:border-indigo hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                    <span class="absolute top-0 left-6 right-6 h-1 bg-amber-400 rounded-b-full scale-x-75 origin-left group-hover:scale-x-100 transition-transform duration-300" aria-hidden="true" />
+                    <div class="flex items-start gap-4">
+                      <span class="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-indigo/10 text-indigo shrink-0 group-hover:bg-indigo group-hover:text-paper group-hover:scale-110 transition-all duration-300">
+                        <IconComponent class="w-5 h-5" stroke-width={1.75} />
+                      </span>
+                      <div>
+                        <h3 class="font-display text-lg font-bold text-ink">
+                          {item.title}
+                        </h3>
+                        <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+                          {item.body}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LAYANAN & BENEFIT ============ -->
+  <section class="bg-slate-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+      <div class="reveal max-w-2xl mb-12">
+        <h2 class="font-display text-3xl lg:text-4xl font-semibold text-ink">
+          Yang Kamu Dapat Setelah Bergabung
+        </h2>
+        <p class="mt-4 text-lg text-ink/70 max-w-[60ch]">
+          Selain kelas bahasa, kamu juga dapat fasilitas dan pendampingan penuh, mulai dari hari pertama daftar sampai tiba di Jepang.
+        </p>
+      </div>
+
+      <!-- ===== FASILITAS ===== -->
+      <div class="mb-14">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-amber-100 text-amber-700 font-bold">
+            <icons.Gift class="w-4 h-4" stroke-width={2} />
+          </span>
+          <h3 class="font-display text-xl font-bold text-ink">
+            Fasilitas Gratis
+          </h3>
+        </div>
+
+        <div class="reveal-group grid sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
+          {
+            fasilitas.map((item) => {
+              const IconComponent = fasilitasIcons[item.iconName] ?? icons.Gift;
+              return (
+                <div class="reveal-item group bg-white border border-slate-200 rounded-2xl hover:border-amber-400 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                  <div class="relative">
+                    <div class="aspect-[3/2] bg-slate-100 rounded-t-2xl overflow-hidden">
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        loading="lazy"
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onerror="this.onerror=null; this.src='https://placehold.co/400x260/E2E8F0/1D3557?text=Fasilitas+HATESE';"
+                      />
+                    </div>
+                    <span class="absolute -bottom-5 left-5 inline-flex items-center justify-center w-11 h-11 rounded-xl bg-amber-400 text-slate-900 shadow-md group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300">
+                      <IconComponent class="w-5 h-5" stroke-width={2} />
+                    </span>
+                  </div>
+                  <div class="pt-8 pb-6 px-6">
+                    <h4 class="font-display text-lg font-bold text-ink">
+                      {item.title}
+                    </h4>
+                    <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+                      {item.body}
+                    </p>
+                  </div>
+                </div>
+              );
+            })
+          }
+        </div>
+      </div>
+
+      <!-- ===== LAYANAN ===== -->
+      <div>
+        <div class="flex items-center gap-3 mb-6">
+          <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-indigo/15 text-indigo">
+            <icons.HandHeart class="w-4 h-4" stroke-width={2} />
+          </span>
+          <h3 class="font-display text-xl font-bold text-ink">
+            Pendampingan Penuh
+          </h3>
+        </div>
+
+        <div class="reveal-group grid sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
+          {
+            layanan.map((item) => {
+              const IconComponent = layananIcons[item.iconName] ?? icons.Star;
+              return (
+                <div class="reveal-item group bg-white border border-slate-200 rounded-2xl hover:border-indigo hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                  <div class="relative">
+                    <div class="aspect-[3/2] bg-slate-100 rounded-t-2xl overflow-hidden">
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        loading="lazy"
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onerror="this.onerror=null; this.src='https://placehold.co/400x260/E2E8F0/1D3557?text=Layanan+HATESE';"
+                      />
+                    </div>
+                    <span class="absolute -bottom-5 left-5 inline-flex items-center justify-center w-11 h-11 rounded-xl bg-indigo text-white shadow-md group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300">
+                      <IconComponent class="w-5 h-5" stroke-width={2} />
+                    </span>
+                  </div>
+                  <div class="pt-8 pb-6 px-6">
+                    <h4 class="font-display text-lg font-bold text-ink">
+                      {item.title}
+                    </h4>
+                    <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+                      {item.body}
+                    </p>
+                  </div>
+                </div>
+              );
+            })
+          }
+        </div>
+      </div>
+
+      <!-- CTA ke halaman Program -->
+      <div class="mt-12 pt-8 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
+        <p class="text-slate-600 max-w-[52ch]">
+          Ingin lihat pilihan kelas berbayarnya? Semua kelas mengarah ke tujuan yang sama, yaitu siap kerja di Jepang.
+        </p>
+        <Button variant="secondary" href="/program" iconRight>
+          Lihat Program & Kelas
+        </Button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PERJALANAN 3 BULAN ============ -->
+  <section class="bg-paper">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+      <div class="reveal text-center max-w-2xl mx-auto mb-16">
+        <h2 class="font-display text-3xl lg:text-4xl font-semibold text-ink">
+          Perjalanan 3 Bulan Menuju Jepang
+        </h2>
+        <p class="mt-4 text-lg text-ink/70">
+          Satu alur yang jelas dari daftar sampai berangkat, tanpa tahap yang
+          bikin bingung.
+        </p>
+      </div>
+
+      <div class="reveal overflow-x-auto snap-x snap-mandatory -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible">
+        <JourneyStepper />
+      </div>
+    </div>
+  </section>
+
+<!-- ============ KISAH ALUMNI ============ -->
+  <section class="bg-slate-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+      <div class="reveal flex flex-wrap items-end justify-between gap-4 mb-12">
+        <div class="max-w-2xl">
+          <h2 class="font-display text-3xl lg:text-4xl font-semibold text-ink">
+            Mereka Sudah Berangkat
+          </h2>
+          <p class="mt-4 text-lg text-slate-600">
+            Kisah nyata alumni HATESE yang kini bekerja di berbagai kota di
+            Jepang.
+          </p>
+        </div>
+        <Button variant="secondary" href="/kisah-alumni" iconRight>
+          Lihat Semua Kisah Alumni
+        </Button>
+      </div>
+
+      {
+        textTestimonials.length > 0 && (
+          <div class="reveal-group grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {textTestimonials.map((t) => (
+              <div class="reveal-item sm:col-span-1 lg:col-span-2">
+                <TestimonialCard
+                  name={t.data.name}
+                  city={t.data.city ?? '-'}
+                  company={t.data.company}
+                  quote={t.data.quote}
+                  photo={t.data.photo}
+                />
+              </div>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="bg-paper">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+      <div class="reveal text-center max-w-2xl mx-auto mb-12">
+        <h2 class="font-display text-3xl lg:text-4xl font-semibold text-ink">
+          Pertanyaan yang Sering Diajukan
+        </h2>
+        <p class="mt-4 text-lg text-slate-600">
+          Belum yakin? Mungkin jawabannya ada di sini.
+        </p>
+      </div>
+
+      <div class="reveal">
+        <FaqAccordion categories={faqCategories} />
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA PENUTUP ============ -->
+  <section class="bg-indigo text-paper">
+    <div
+      class="reveal max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24 text-center"
+    >
+      <div class="inline-flex items-center gap-2 bg-paper/10 text-paper/90 text-sm font-medium px-4 py-1.5 rounded-full mb-6">
+        <icons.Users class="w-4 h-4" stroke-width={2} />
+        Bergabung dengan 1.000+ siswa lainnya
+      </div>
+
+      <h2 class="font-display text-3xl lg:text-4xl font-bold">
+        Siap Memulai Perjalananmu ke Jepang?
+      </h2>
+      <p class="mt-4 text-lg text-paper/80 max-w-[52ch] mx-auto leading-relaxed">
+        Konsultasi dulu, gratis. Tim kami akan jelaskan alur, biaya, dan
+        peluang yang paling cocok buat kamu.
+      </p>
+      <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <Button variant="primary" href="/daftar" iconRight>
+          Konsultasi Sekarang
+        </Button>
+        <a
+          href="/karier"
+          class="inline-flex items-center gap-2 px-6 py-3 text-paper border border-paper/40 rounded-xl font-semibold hover:bg-paper/10 transition-colors"
+        >
+          Lihat Bidang Kerja
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<!-- State awal elemen reveal: disembunyikan lewat CSS (server-rendered),
+     supaya tidak ada "kedip" konten sebelum script animasi jalan. -->
+<style>
+  .reveal,
+  .reveal-item {
+    opacity: 0;
+  }
+</style>
+
+<!-- Fallback kalau JS mati: tampilkan semua konten seperti biasa -->
+<noscript>
+  <style>
+    .reveal,
+    .reveal-item {
+      opacity: 1 !important;
+    }
+  </style>
+</noscript>
+
+<!-- ============ HERO LOAD ANIMATION ============ -->
+<script>
+  import { animate, inView, stagger } from "motion";
+
+  const prefersReduced = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+  if (!prefersReduced) {
+    const copy = document.querySelector(".js-hero-copy");
+    const image = document.querySelector(".js-hero-image");
+    const cta = document.querySelector(".js-hero-cta");
+
+    if (copy || image) {
+      animate(
+        [copy, image].filter(Boolean) as Element[],
+        { opacity: [0, 1], y: [16, 0] },
+        { duration: 0.6, delay: stagger(0.12), ease: "easeOut" },
+      );
+    }
+    if (cta) {
+      animate(
+        cta,
+        { opacity: [0, 1], y: [12, 0] },
+        { duration: 0.5, delay: 0.4, ease: "easeOut" },
+      );
+    }
+  }
+
+  // ============ FADE-IN SAAT SCROLL ============
+  // Elemen ".reveal" fade + geser naik satu-satu ketika masuk viewport.
+  // Elemen ".reveal-item" di dalam ".reveal-group" muncul bertahap (stagger)
+  // begitu grid-nya mulai terlihat.
+  const revealEls = document.querySelectorAll<HTMLElement>(".reveal");
+  const revealGroups = document.querySelectorAll<HTMLElement>(".reveal-group");
+
+  if (prefersReduced) {
+    revealEls.forEach((el) => (el.style.opacity = "1"));
+    revealGroups.forEach((group) =>
+      group
+        .querySelectorAll<HTMLElement>(".reveal-item")
+        .forEach((el) => (el.style.opacity = "1")),
+    );
+  } else {
+    revealEls.forEach((el) => {
+      inView(
+        el,
+        () => {
+          animate(
+            el,
+            { opacity: [0, 1], y: [24, 0] },
+            { duration: 0.6, ease: "easeOut" },
+          );
+        },
+        { amount: 0.2 },
+      );
+    });
+
+    revealGroups.forEach((group) => {
+      const items = group.querySelectorAll<HTMLElement>(".reveal-item");
+      if (items.length === 0) return;
+      inView(
+        group,
+        () => {
+          animate(
+            Array.from(items),
+            { opacity: [0, 1], y: [20, 0] },
+            { duration: 0.5, delay: stagger(0.08), ease: "easeOut" },
+          );
+        },
+        { amount: 0.15 },
+      );
+    });
+  }
+
+  // ============ ANGKA BERJALAN (COUNT-UP) ============
+  // Elemen dengan [data-counter-target] dihitung naik dari 0 sampai
+  // nilai aslinya, dipicu sekali saat pertama kali terlihat di layar.
+  const counters = document.querySelectorAll<HTMLElement>(
+    "[data-counter-target]",
+  );
+
+  const formatCounter = (value: number, prefix: string, suffix: string) =>
+    `${prefix}${Math.floor(value).toLocaleString("id-ID")}${suffix}`;
+
+  counters.forEach((el) => {
+    const target = Number(el.dataset.counterTarget ?? "0");
+    const prefix = el.dataset.counterPrefix ?? "";
+    const suffix = el.dataset.counterSuffix ?? "";
+
+    if (prefersReduced) {
+      el.textContent = formatCounter(target, prefix, suffix);
+      return;
+    }
+
+    const stopWatching = inView(
+      el,
+      () => {
+        animate(0, target, {
+          duration: 1.8,
+          ease: "easeOut",
+          onUpdate: (latest) => {
+            el.textContent = formatCounter(latest, prefix, suffix);
+          },
+        });
+        stopWatching();
+      },
+      { amount: 0.6 },
+    );
+  });
+</script>

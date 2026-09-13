@@ -1,0 +1,256 @@
+---
+// src/pages/program/[slug].astro — Detail kelas
+import { getCollection, type CollectionEntry, render } from 'astro:content';
+import * as icons from 'lucide-astro';
+import { Clock, LayoutGrid, Wallet } from 'lucide-astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Button from '../../components/Button.astro';
+
+export async function getStaticPaths() {
+  const programs = await getCollection('programs');
+  return programs.map((program) => ({
+    params: { slug: program.id },
+    props: { program },
+  }));
+}
+
+interface Props {
+  program: CollectionEntry<'programs'>;
+}
+
+const { program } = Astro.props;
+const { data } = program;
+const { Content } = await render(program);
+
+const IconComponent = (icons as Record<string, any>)[data.iconName] ?? icons.BookOpen;
+
+// Cegah duplikasi kata "Kelas" saat title sudah diawali "Kelas" (mis. "Kelas Reguler (Offline)")
+const cleanTitle = data.title.replace(/^Kelas\s+/i, '');
+---
+
+<BaseLayout
+  title={`${data.title} - Program & Kelas`}
+  description={data.description}
+>
+  <!-- ============ HERO ============ -->
+  <section class="relative bg-indigo text-paper overflow-hidden">
+    <!-- Dekorasi kedalaman -->
+    <div class="pointer-events-none absolute -top-24 -right-16 w-72 h-72 rounded-full bg-gold/10 blur-3xl" aria-hidden="true"></div>
+    <div class="pointer-events-none absolute -bottom-32 -left-20 w-80 h-80 rounded-full bg-paper/5 blur-3xl" aria-hidden="true"></div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+      <!-- Breadcrumb -->
+      <nav class="mb-8 text-sm text-paper/60" aria-label="Breadcrumb">
+        <ol class="flex items-center gap-2 flex-wrap">
+          <li><a href="/" class="hover:text-gold transition-colors">Beranda</a></li>
+          <li aria-hidden="true">/</li>
+          <li><a href="/program" class="hover:text-gold transition-colors">Program</a></li>
+          <li aria-hidden="true">/</li>
+          <li class="text-paper">{data.title}</li>
+        </ol>
+      </nav>
+
+      <div class={`grid gap-10 lg:gap-14 items-stretch ${data.image ? 'lg:grid-cols-2' : ''}`}>
+        <div
+          data-reveal
+          class="opacity-0 translate-y-6 transition-all duration-700 ease-out flex flex-col justify-center"
+        >
+          <span class="flex-shrink-0 w-14 h-14 rounded-2xl bg-paper/10 ring-1 ring-paper/15 flex items-center justify-center mb-5">
+            <IconComponent class="w-7 h-7 text-gold" stroke-width={1.5} />
+          </span>
+
+          <h1 class="font-display text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight">
+            {data.title}
+          </h1>
+          <p class="mt-3 text-lg text-paper/80 max-w-[52ch]">
+            {data.description}
+          </p>
+
+          <!-- Quick stats -->
+          <div class="mt-8 flex flex-wrap sm:flex-nowrap divide-x divide-paper/15 bg-paper/5 border border-paper/10 rounded-[--radius-card] overflow-hidden">
+            <div class="flex-1 min-w-[110px] px-5 py-4">
+              <p class="flex items-center gap-1.5 text-xs text-paper/60">
+                <Clock class="w-3.5 h-3.5" stroke-width={2} />
+                Durasi
+              </p>
+              <p class="mt-1 font-display text-lg font-medium text-gold">{data.duration}</p>
+            </div>
+            <div class="flex-1 min-w-[110px] px-5 py-4">
+              <p class="flex items-center gap-1.5 text-xs text-paper/60">
+                <LayoutGrid class="w-3.5 h-3.5" stroke-width={2} />
+                Format
+              </p>
+              <p class="mt-1 font-display text-lg font-medium text-gold">{data.format}</p>
+            </div>
+            {data.price && (
+              <div class="flex-1 min-w-[110px] px-5 py-4">
+                <p class="flex items-center gap-1.5 text-xs text-paper/60">
+                  <Wallet class="w-3.5 h-3.5" stroke-width={2} />
+                  Biaya
+                </p>
+                <p class="mt-1 font-display text-lg font-medium text-gold">{data.price}</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <!-- Gambar hero -->
+        {data.image && (
+          <div
+            data-reveal
+            style="transition-delay: 150ms"
+            class="relative opacity-0 translate-y-6 transition-all duration-700 ease-out rounded-[--radius-card] overflow-hidden bg-mist ring-1 ring-paper/10 min-h-[280px] h-full"
+          >
+            <img
+              src={data.image}
+              alt={`Foto kelas ${data.title}`}
+              class="absolute inset-0 w-full h-full object-cover"
+              loading="eager"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-indigo/50 via-transparent to-transparent"></div>
+            {data.badge && (
+              <span class="absolute top-4 left-4 inline-flex items-center bg-gold text-ink text-xs font-semibold px-3 py-1.5 rounded-full">
+                {data.badge}
+              </span>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DESKRIPSI ============ -->
+  <section class="bg-paper">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
+      <div class="grid lg:grid-cols-3 gap-12">
+
+        <!-- Kolom utama -->
+        <div class="lg:col-span-2 space-y-12">
+          <!-- Deskripsi lengkap (markdown body) -->
+          <div
+            data-reveal
+            class="opacity-0 translate-y-6 transition-all duration-700 ease-out prose prose-slate max-w-[68ch] prose-headings:font-display prose-headings:text-ink prose-p:text-ink/70 prose-li:text-ink/70 prose-strong:text-ink prose-blockquote:border-indigo prose-blockquote:text-ink/80"
+          >
+            <Content />
+          </div>
+
+          <!-- Highlights -->
+          <div data-reveal class="opacity-0 translate-y-6 transition-all duration-700 ease-out">
+            <h2 class="font-display text-2xl lg:text-3xl font-semibold text-ink mb-4">
+              Yang Akan Kamu Dapatkan
+            </h2>
+            <ul class="space-y-3">
+              {data.highlights.map((item) => (
+                <li class="flex items-start gap-3 text-ink/80">
+                  <svg class="w-5 h-5 text-success flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span class="leading-relaxed">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <!-- Cocok untuk siapa -->
+          <div
+            data-reveal
+            class="opacity-0 translate-y-6 transition-all duration-700 ease-out bg-mist/40 border border-mist rounded-[--radius-card] p-6"
+          >
+            <h3 class="font-display text-lg font-medium text-ink mb-2">
+              Kelas Ini Cocok untuk Siapa?
+            </h3>
+            <p class="text-ink/70 leading-relaxed">{data.audience}</p>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="lg:col-span-1">
+          <div
+            data-reveal
+            class="opacity-0 translate-y-6 transition-all duration-700 ease-out sticky top-24 bg-paper border border-mist shadow-md rounded-[--radius-card] p-6 lg:p-8 space-y-6"
+          >
+            <div>
+              <h3 class="font-display text-lg font-medium text-ink mb-2">
+                Tertarik Kelas Ini?
+              </h3>
+              <p class="text-sm text-ink/70 leading-relaxed">
+                Konsultasi gratis dulu, tim kami akan menjelaskan alur, biaya, dan jadwal angkatan terdekat.
+              </p>
+            </div>
+
+            <Button variant="primary" href="/daftar" iconRight class="w-full">
+              Konsultasi Sekarang
+            </Button>
+
+            <div class="pt-6 border-t border-mist">
+              <a href="/program" class="text-ink/70 hover:text-indigo transition-colors inline-flex items-center gap-1.5 text-sm">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                Lihat semua program
+              </a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA PENUTUP ============ -->
+  <section class="bg-indigo text-paper">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20 text-center">
+      <div data-reveal class="opacity-0 translate-y-6 transition-all duration-700 ease-out">
+        <h2 class="font-display text-3xl lg:text-4xl font-semibold">
+          Siap Mulai dari Kelas {cleanTitle}?
+        </h2>
+        <p class="mt-4 text-lg text-paper/80 max-w-[52ch] mx-auto">
+          Langkah pertama adalah konsultasi. Gratis, tanpa komitmen.
+        </p>
+        <div class="mt-8 flex flex-wrap justify-center gap-3">
+          <Button variant="primary" href="/daftar" iconRight>
+            Konsultasi Sekarang
+          </Button>
+          <a
+            href="/karier"
+            class="group inline-flex items-center gap-2 px-6 py-[11px] text-sm font-medium text-paper bg-paper/10 border-b-[3px] border-paper/25 rounded-[--radius-button] transition-all duration-150 hover:bg-paper/15 active:translate-y-[2px] active:border-b-0"
+          >
+            Lihat Bidang Kerja
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <noscript>
+    <style>
+      [data-reveal] { opacity: 1 !important; transform: none !important; }
+    </style>
+  </noscript>
+
+  <script>
+    const els = document.querySelectorAll('[data-reveal]');
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const reveal = (el: Element) => {
+      el.classList.remove('opacity-0', 'translate-y-6');
+      el.classList.add('opacity-100', 'translate-y-0');
+    };
+
+    if (prefersReduced || !('IntersectionObserver' in window)) {
+      els.forEach(reveal);
+    } else {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              reveal(entry.target);
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.15, rootMargin: '0px 0px -40px 0px' }
+      );
+      els.forEach((el) => observer.observe(el));
+    }
+  </script>
+</BaseLayout>

@@ -1,0 +1,258 @@
+---
+// src/pages/program/index.astro — Program & Kelas
+import { getCollection } from 'astro:content';
+import { BookOpen, ClipboardCheck, Briefcase, PlaneTakeoff } from 'lucide-astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Button from '../../components/Button.astro';
+import ProgramCard from '../../components/ProgramCard.astro';
+
+const programs = (await getCollection('programs')).sort(
+  (a, b) => a.data.order - b.data.order
+);
+
+const [featuredProgram, ...otherPrograms] = programs;
+
+const benefits = [
+  {
+    icon: BookOpen,
+    title: 'Modul & Bank Soal',
+    body: 'Materi belajar dan latihan soal sesuai standar ujian terbaru.',
+  },
+  {
+    icon: ClipboardCheck,
+    title: 'Pendampingan Ujian',
+    body: 'Simulasi dan persiapan JFT-A2/JLPT N4 sampai hari-H.',
+  },
+  {
+    icon: Briefcase,
+    title: 'Matching Job',
+    body: 'Pencocokan dengan lowongan sesuai bidang dan minatmu.',
+  },
+  {
+    icon: PlaneTakeoff,
+    title: 'Pendampingan Keberangkatan',
+    body: 'Dari dokumen sampai tiba di Jepang, kami dampingi.',
+  },
+];
+---
+
+<BaseLayout
+  title="Program & Kelas"
+  description="Program pelatihan intensif JFT-Basic & SSW terstruktur dengan pendampingan hingga keberangkatan. Biaya terjangkau mulai Rp2 Juta/bulan."
+>
+  <!-- ============ HERO ============ -->
+  <section class="bg-indigo text-paper overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div data-reveal class="opacity-0 translate-y-6 transition-all duration-700 ease-out">
+          <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-semibold leading-[1.05]">
+            Raih <span class="text-gold">Karir Impian di Jepang</span> Bersama HATESE
+          </h1>
+          <p class="mt-6 text-lg text-paper/80 leading-relaxed max-w-[52ch]">
+            Program pelatihan intensif JFT-Basic & SSW terstruktur dengan pendampingan hingga keberangkatan. Biaya terjangkau mulai Rp2 Juta/bulan.
+          </p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <Button variant="primary" href="/daftar" iconRight>
+              Konsultasi Pilihan Kelas
+            </Button>
+            <a
+              href="/karier"
+              class="group inline-flex items-center gap-2 px-6 py-[11px] text-sm font-medium text-paper bg-paper/10 border-b-[3px] border-paper/25 rounded-[--radius-button] transition-all duration-150 hover:bg-paper/15 active:translate-y-[2px] active:border-b-0"
+            >
+              Lihat Bidang Kerja
+            </a>
+          </div>
+        </div>
+
+        <!-- Ganti src di bawah dengan path gambar yang sudah kamu siapkan -->
+        <div
+          data-reveal
+          style="transition-delay: 150ms"
+          class="opacity-0 translate-y-6 transition-all duration-700 ease-out aspect-[4/3] rounded-[--radius-card] overflow-hidden"
+        >
+          <img
+            src="/images/hero-program.webp"
+            alt="Siswa HATESE belajar bahasa Jepang di kelas"
+            class="w-full h-full object-cover"
+            loading="eager"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TRUST BAR: YANG DIDAPAT DI SEMUA KELAS ============ -->
+  <section class="bg-paper border-y border-mist">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+        {benefits.map((item, i) => (
+          <div
+            data-reveal
+            style={`transition-delay: ${i * 60}ms`}
+            class="opacity-0 translate-y-6 transition-all duration-700 ease-out flex items-start gap-4"
+          >
+            <span class="inline-flex items-center justify-center w-11 h-11 rounded-full bg-indigo/10 text-indigo p-3 flex-shrink-0">
+              <item.icon class="w-5 h-5" stroke-width={1.75} />
+            </span>
+            <div>
+              <h3 class="font-display font-medium text-ink leading-snug">
+                {item.title}
+              </h3>
+              <p class="mt-1 text-xs text-ink/70 leading-relaxed">
+                {item.body}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GRID PROGRAM ============ -->
+  <section class="bg-paper">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+      <div
+        data-reveal
+        class="opacity-0 translate-y-6 transition-all duration-700 ease-out max-w-2xl mb-12"
+      >
+        <h2 class="font-display text-3xl lg:text-4xl font-semibold text-ink">
+          Pilih Kelas yang Cocok untukmu
+        </h2>
+        <p class="mt-4 text-lg text-ink/70">
+          Semua kelas mengantarkan ke tujuan yang sama, yaitu siap kerja di Jepang. Yang berbeda hanya format dan jadwalnya.
+        </p>
+      </div>
+
+      <!-- Featured card: program pertama tampil penuh lebar -->
+      {featuredProgram && (
+        <div
+          data-reveal
+          class="opacity-0 translate-y-6 transition-all duration-700 ease-out mb-6"
+        >
+          <a
+            href={`/program/${featuredProgram.id}`}
+            class="group grid lg:grid-cols-2 gap-8 bg-paper border border-mist rounded-[--radius-card] p-6 lg:p-8 shadow-sm hover:shadow-xl transition-all duration-300"
+          >
+            <div class="relative aspect-[16/10] lg:aspect-auto rounded-[--radius-card] overflow-hidden bg-mist">
+              {featuredProgram.data.image ? (
+                <img
+                  src={featuredProgram.data.image}
+                  alt={`Foto kelas ${featuredProgram.data.title}`}
+                  loading="eager"
+                  class="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                />
+              ) : (
+                <div class="w-full h-full flex items-center justify-center bg-mist">
+                  <BookOpen class="w-12 h-12 text-indigo/30" stroke-width={1.5} />
+                </div>
+              )}
+              {featuredProgram.data.badge && (
+                <span class="absolute top-3 left-3 inline-flex items-center bg-gold text-ink text-xs font-medium px-2.5 py-1 rounded-md">
+                  {featuredProgram.data.badge}
+                </span>
+              )}
+            </div>
+            <div class="flex flex-col justify-center">
+              <h3 class="font-display text-2xl lg:text-3xl font-semibold text-ink leading-snug">
+                {featuredProgram.data.title}
+              </h3>
+              <p class="mt-3 text-ink/70 leading-relaxed">
+                {featuredProgram.data.description}
+              </p>
+              <div class="mt-6 pt-6 border-t border-mist flex items-center gap-1.5 text-sm font-medium text-indigo">
+                Pelajari Kurikulum & Biaya
+                <svg
+                  class="w-4 h-4 transition-transform duration-150 group-hover:translate-x-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </div>
+          </a>
+        </div>
+      )}
+
+      <!-- Program lainnya: grid 2 kolom -->
+      <div class="grid sm:grid-cols-2 gap-6">
+        {otherPrograms.map((program, i) => (
+          <div
+            data-reveal
+            style={`transition-delay: ${i * 80}ms`}
+            class="opacity-0 translate-y-6 transition-all duration-700 ease-out"
+          >
+            <ProgramCard
+              title={program.data.title}
+              description={program.data.description}
+              slug={program.id}
+              image={program.data.image}
+              iconName={program.data.iconName}
+              badge={program.data.badge}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="bg-indigo text-paper">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24 text-center">
+      <div data-reveal class="opacity-0 translate-y-6 transition-all duration-700 ease-out">
+        <h2 class="font-display text-3xl lg:text-4xl font-semibold">
+          Bingung Pilih Kelas Mana?
+        </h2>
+        <p class="mt-4 text-lg text-paper/80 max-w-[52ch] mx-auto">
+          Ceritakan kesibukan dan tujuanmu. Tim HATESE akan merekomendasikan kelas yang paling cocok.
+        </p>
+        <div class="mt-8 flex flex-wrap justify-center gap-3">
+          <Button variant="primary" href="/daftar" iconRight>
+            Konsultasi Sekarang
+          </Button>
+          <a
+            href="/karier"
+            class="group inline-flex items-center gap-2 px-6 py-[11px] text-sm font-medium text-paper bg-paper/10 border-b-[3px] border-paper/25 rounded-[--radius-button] transition-all duration-150 hover:bg-paper/15 active:translate-y-[2px] active:border-b-0"
+          >
+            Lihat Bidang Kerja
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <noscript>
+    <style>
+      [data-reveal] { opacity: 1 !important; transform: none !important; }
+    </style>
+  </noscript>
+
+  <script>
+    const els = document.querySelectorAll('[data-reveal]');
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const reveal = (el: Element) => {
+      el.classList.remove('opacity-0', 'translate-y-6');
+      el.classList.add('opacity-100', 'translate-y-0');
+    };
+
+    if (prefersReduced || !('IntersectionObserver' in window)) {
+      els.forEach(reveal);
+    } else {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              reveal(entry.target);
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.15, rootMargin: '0px 0px -40px 0px' }
+      );
+      els.forEach((el) => observer.observe(el));
+    }
+  </script>
+</BaseLayout>

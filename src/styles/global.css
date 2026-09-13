@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+/* Font imports */
+@import "@fontsource/source-serif-4/400.css";
+@import "@fontsource/source-serif-4/500.css";
+@import "@fontsource/source-serif-4/600.css";
+@import "@fontsource/ibm-plex-sans/400.css";
+@import "@fontsource/ibm-plex-sans/500.css";
+
+/* ===== HATESE Design System Tokens ===== */
+@theme {
+  /* Colors — dari 02-design-system.md */
+  --color-ink: #1C2029;
+  --color-indigo: #1F3A63;
+  --color-indigo-deep: #142A49;
+  --color-paper: #F5F3EC;
+  --color-vermillion: #D2472A;
+  --color-vermillion-hover: #B93B21;
+  --color-gold: #E3A93F;
+  --color-mist: #DEDDD3;
+  --color-success: #3E7A57;
+
+  /* Typography */
+  --font-display: "Source Serif 4", Georgia, serif;
+  --font-body: "IBM Plex Sans", "IBM Plex Sans JP", system-ui, sans-serif;
+
+  /* Border radius */
+  --radius-card: 12px;
+  --radius-button: 8px;
+  --radius-accordion: 8px;
+}
+
+/* Base styles */
+@layer base {
+  html {
+    font-family: var(--font-body);
+    color: var(--color-ink);
+    background-color: var(--color-paper);
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+  }
+
+  /* Focus visible ring — accessibility requirement */
+  *:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+[x-cloak] {
+  display: none !important;
+}

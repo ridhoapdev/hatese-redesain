@@ -1,0 +1,211 @@
+---
+// src/pages/karier/index.astro — Bidang Kerja di Jepang
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Button from '../../components/Button.astro';
+import CareerTicketCard from '../../components/CareerTicketCard.astro';
+
+// Ambil semua careers, urutkan berdasarkan order
+const careers = (await getCollection('careers')).sort(
+  (a, b) => a.data.order - b.data.order
+);
+
+// Kategori unik (dari data, bukan hardcoded)
+const categories = [
+  'Semua',
+  ...Array.from(new Set(careers.map((c) => c.data.category))),
+];
+---
+
+<BaseLayout
+  title="Bidang Kerja di Jepang"
+  description={`${careers.length} bidang kerja resmi menanti di Jepang. Setiap bidang punya jalur sertifikasi SSW sendiri — pilih sesuai minat dan keahlianmu.`}
+>
+  <!-- ============ HERO ============ -->
+  <section class="bg-indigo text-paper">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-semibold leading-[1.05]">
+          {careers.length} Bidang Kerja Resmi <br class="hidden sm:block" />
+          <span class="text-gold">Menanti di Jepang.</span>
+        </h1>
+        <p class="mt-6 text-lg text-paper/80 leading-relaxed max-w-[60ch]">
+          Setiap bidang punya jalur sertifikasi SSW sendiri — pilih sesuai minat dan keahlianmu. Semua bidang di bawah ini resmi dibuka untuk tenaga kerja asing.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <Button variant="primary" href="/daftar" iconRight>
+            Konsultasi Bidang Pilihanmu
+          </Button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GRID KARIER + FILTER ============ -->
+  <section class="bg-paper" x-data="{ activeCategory: 'Semua' }">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
+
+      <!-- Filter chips -->
+      <div class="mb-10">
+        <p class="text-sm font-medium text-ink/60 mb-3">Filter berdasarkan kategori:</p>
+        <div class="flex flex-wrap gap-2">
+          {categories.map((cat) => (
+            <button
+              type="button"
+              @click={`activeCategory = '${cat}'`}
+              :class={`activeCategory === '${cat}'
+                ? 'bg-indigo text-white border-indigo'
+                : 'bg-transparent text-ink border-mist hover:border-indigo'`}
+              class="px-4 py-1.5 text-sm font-medium border rounded-full transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-gold focus-visible:outline-offset-2"
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <!-- Grid kartu karier -->
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">
+        {careers.map((career) => (
+          <div
+            x-cloak
+            x-show={`activeCategory === 'Semua' || activeCategory === '${career.data.category}'`}
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 scale-95"
+            x-transition:enter-end="opacity-100 scale-100"
+          >
+            <CareerTicketCard
+              title={career.data.title}
+              category={career.data.category}
+              salaryRange={career.data.salaryRange}
+              quota={career.data.quota}
+              iconName={career.data.iconName}
+              slug={career.id}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ INFO SSW ============ -->
+  <section class="bg-mist/40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
+      <div class="grid lg:grid-cols-2 gap-12 items-start">
+        <div>
+          <h2 class="font-display text-3xl lg:text-4xl font-semibold text-ink">
+            Apa Itu SSW dan Kenapa Penting?
+          </h2>
+          <p class="mt-4 text-lg text-ink/70 leading-relaxed max-w-[60ch]">
+            SSW (Specified Skilled Worker) adalah status visa kerja resmi Jepang untuk tenaga kerja terampil. Untuk mendapatkannya, kamu perlu lulus ujian bahasa Jepang (JFT-A2 atau JLPT N4) dan ujian keterampilan sesuai bidang yang dipilih.
+          </p>
+          <p class="mt-4 text-base text-ink/70 leading-relaxed max-w-[60ch]">
+            HATESE membimbingmu melewati semua tahap ini — dari belajar bahasa dari nol sampai sertifikasi keterampilan bidang.
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          <div class="bg-paper border border-mist rounded-[--radius-card] p-6">
+            <h3 class="font-display text-lg font-medium text-ink mb-2">
+              1. Ujian Bahasa Jepang
+            </h3>
+            <p class="text-sm text-ink/70 leading-relaxed">
+              JFT-A2 atau JLPT N4 — membuktikan kemampuan bahasa Jepang dasar untuk bekerja dan berkomunikasi sehari-hari.
+            </p>
+          </div>
+          <div class="bg-paper border border-mist rounded-[--radius-card] p-6">
+            <h3 class="font-display text-lg font-medium text-ink mb-2">
+              2. Ujian Keterampilan Bidang
+            </h3>
+            <p class="text-sm text-ink/70 leading-relaxed">
+              Sesuai bidang kerja yang dipilih — memastikan kamu siap secara teknis sebelum bekerja di Jepang.
+            </p>
+          </div>
+          <div class="bg-paper border border-mist rounded-[--radius-card] p-6">
+            <h3 class="font-display text-lg font-medium text-ink mb-2">
+              3. Sertifikat SSW Resmi
+            </h3>
+            <p class="text-sm text-ink/70 leading-relaxed">
+              Setelah lulus kedua ujian, kamu resmi memegang status SSW dan siap diberangkatkan ke Jepang.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="bg-indigo text-paper">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24 text-center">
+      <h2 class="font-display text-3xl lg:text-4xl font-semibold">
+        Masih Bingung Pilih Bidang Mana?
+      </h2>
+      <p class="mt-4 text-lg text-paper/80 max-w-[52ch] mx-auto">
+        Tim HATESE siap membantu mencocokkan minat dan keahlianmu dengan bidang kerja yang paling cocok.
+      </p>
+      <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <Button variant="primary" href="/daftar" iconRight>
+          Konsultasi Sekarang
+        </Button>
+        <a href="/program" class="inline-flex items-center gap-2 px-5 py-2.5 text-paper border-[1.5px] border-paper/40 rounded-[--radius-button] hover:bg-paper/10 transition-colors">
+          Lihat Program Belajar
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCROLL REVEAL (fade-in ketika di-scroll) ============ -->
+  <style>
+    section.js-reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+    section.js-reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      section.js-reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+    }
+  </style>
+
+  <script>
+    function initScrollReveal() {
+      const sections = document.querySelectorAll('section');
+      if (!sections.length) return;
+
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      sections.forEach((el) => el.classList.add('js-reveal'));
+
+      if (prefersReduced || !('IntersectionObserver' in window)) {
+        sections.forEach((el) => el.classList.add('is-visible'));
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.12, rootMargin: '0px 0px -8% 0px' }
+      );
+
+      sections.forEach((el) => observer.observe(el));
+    }
+
+    // Jalankan saat load pertama, dan saat navigasi lewat Astro View Transitions (jika dipakai)
+    initScrollReveal();
+    document.addEventListener('astro:page-load', initScrollReveal);
+  </script>
+</BaseLayout>

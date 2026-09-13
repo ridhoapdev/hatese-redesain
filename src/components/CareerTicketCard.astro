@@ -1,0 +1,88 @@
+---
+import * as icons from 'lucide-astro';
+
+interface Props {
+  title: string;
+  category: string;
+  salaryRange: string;
+  quota: string;
+  iconName: string;
+  image?: string;
+  slug: string;
+}
+
+const { title, category, salaryRange, quota, iconName, image, slug } = Astro.props;
+
+// Ambil ikon Lucide secara dinamis dari nama
+const IconComponent = (icons as Record<string, any>)[iconName] ?? icons.Briefcase;
+
+// Warna badge kuota
+const quotaColor =
+  quota === 'Kuota terbuka'
+    ? 'text-success bg-success/10'
+    : quota === 'Kuota terbatas'
+      ? 'text-gold bg-gold/15'
+      : 'text-ink/60 bg-mist';
+---
+
+<a
+  href={`/karier/${slug}`}
+  class="group relative flex flex-col bg-paper border border-mist rounded-[--radius-card] overflow-hidden transition-colors duration-150 hover:border-indigo focus-visible:outline-2 focus-visible:outline-gold focus-visible:outline-offset-2"
+>
+  <!-- Accent line kiri saat hover -->
+  <span
+    class="absolute left-0 top-0 bottom-0 w-[3px] bg-vermillion scale-y-0 group-hover:scale-y-100 origin-top transition-transform duration-200 z-10"
+    aria-hidden="true"
+  ></span>
+
+  <!-- Gambar -->
+  <div class="relative aspect-[16/10] overflow-hidden bg-mist">
+    {image ? (
+      <img
+        src={image}
+        alt={`Ilustrasi bidang ${title}`}
+        loading="lazy"
+        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+      />
+    ) : (
+      <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo/10 to-mist">
+        <IconComponent class="w-14 h-14 text-indigo/40" stroke-width={1.5} />
+      </div>
+    )}
+
+    <!-- Overlay gradient tipis supaya teks/badge di atas gambar terbaca -->
+    <div class="absolute inset-0 bg-gradient-to-t from-ink/60 via-ink/0 to-ink/0" aria-hidden="true"></div>
+
+    <!-- Icon Lucide di sudut kiri atas (badge) -->
+    <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 bg-paper/95 backdrop-blur-sm text-ink text-xs font-medium px-2.5 py-1 rounded-md">
+      <IconComponent class="w-3.5 h-3.5 text-indigo" stroke-width={2} />
+      {category}
+    </span>
+
+    <!-- Badge kuota di sudut kanan atas -->
+    <span class:list={['absolute top-3 right-3 text-xs font-medium px-2.5 py-1 rounded-md bg-paper/95 backdrop-blur-sm', quotaColor]}>
+      {quota}
+    </span>
+  </div>
+
+  <!-- Konten -->
+  <div class="flex-1 flex flex-col p-5">
+    <h3 class="font-display text-lg font-medium text-ink group-hover:text-indigo transition-colors leading-snug">
+      {title}
+    </h3>
+
+    <!-- Footer: gaji + aksi -->
+    <div class="mt-4 pt-4 border-t border-mist flex items-center justify-between gap-3">
+      <div class="min-w-0">
+        <p class="text-[11px] uppercase tracking-wide text-ink/50 font-medium">Estimasi Gaji</p>
+        <p class="text-sm font-medium text-ink truncate">{salaryRange}</p>
+      </div>
+
+      <span class="flex-shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-full bg-mist/60 text-ink/60 group-hover:bg-indigo group-hover:text-white transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </span>
+    </div>
+  </div>
+</a>

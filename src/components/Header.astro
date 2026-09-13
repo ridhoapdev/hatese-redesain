@@ -1,0 +1,161 @@
+---
+// Header.astro — Streamlined High-UX Enterprise Navigation
+const navItems = [
+  { label: 'Beranda', href: '/' },
+  { label: 'Program', href: '/program' },
+  { label: 'Karier di Jepang', href: '/karier' },
+  { label: 'Kegiatan', href: '/kegiatan' },
+  { label: 'Kisah Alumni', href: '/kisah-alumni' },
+  { label: 'Tentang Kami', href: '/tentang' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header
+  x-data="{ mobileOpen: false }"
+  x-on:keydown.escape.window="mobileOpen = false"
+  x-effect="document.documentElement.classList.toggle('overflow-hidden', mobileOpen)"
+  class="sticky top-0 z-50 bg-paper/95 backdrop-blur-md border-b border-mist/80 transition-all duration-200"
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16 sm:h-20">
+      
+      <!-- Logo Gambar -->
+      <a href="/" class="flex items-center gap-2 group shrink-0 transition-opacity duration-200 hover:opacity-90" @click="mobileOpen = false">
+        <img
+          src="/images/logo-with-text1.webp"
+          alt="Logo Hatese"
+          class="h-8 sm:h-9 lg:h-10 w-auto object-contain"
+        />
+      </a>
+
+      <!-- Desktop Navigation (Clean Minimalist Streamlined UX) -->
+      <nav class="hidden lg:flex items-center gap-1 xl:gap-2" aria-label="Navigasi utama">
+        {navItems.map((item) => {
+          const isActive = currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href));
+          return (
+            <a
+              href={item.href}
+              class:list={[
+                'relative px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-150',
+                isActive
+                  ? 'text-vermillion font-bold bg-vermillion/5'
+                  : 'text-slate-700 hover:text-indigo hover:bg-slate-100/70'
+              ]}
+            >
+              <span>{item.label}</span>
+              {isActive && (
+                <span class="absolute bottom-0 left-3.5 right-3.5 h-0.5 bg-vermillion rounded-full" aria-hidden="true"></span>
+              )}
+            </a>
+          );
+        })}
+      </nav>
+
+      <!-- CTA Button (Desktop) - Professional Clean & Tactile -->
+      <div class="hidden lg:flex items-center gap-3 shrink-0">
+        <a
+          href="/daftar"
+          class="group relative inline-flex items-center justify-center gap-2 bg-vermillion hover:bg-vermillion-hover text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-vermillion/20 hover:shadow-lg hover:shadow-vermillion/35 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-200"
+        >
+          <span>Konsultasi Sekarang</span>
+          <svg class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button
+        type="button"
+        class="lg:hidden relative z-[60] p-2.5 rounded-xl text-slate-700 hover:text-indigo hover:bg-slate-100 active:scale-95 transition-all"
+        @click="mobileOpen = !mobileOpen"
+        :aria-expanded="mobileOpen"
+        aria-label="Buka menu navigasi"
+        aria-controls="mobile-nav-panel"
+      >
+        <svg x-show="!mobileOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+        <svg x-show="mobileOpen" x-cloak class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Backdrop Overlay (mobile) -->
+  <div
+    x-show="mobileOpen"
+    x-cloak
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition ease-in duration-150"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    class="lg:hidden fixed inset-0 top-16 sm:top-20 z-40 bg-ink/40 backdrop-blur-[2px]"
+    @click="mobileOpen = false"
+    aria-hidden="true"
+  ></div>
+
+  <!-- Mobile Menu Panel -->
+  <div
+    id="mobile-nav-panel"
+    x-show="mobileOpen"
+    x-cloak
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="opacity-0 -translate-y-2"
+    x-transition:enter-end="opacity-100 translate-y-0"
+    x-transition:leave="transition ease-in duration-150"
+    x-transition:leave-start="opacity-100 translate-y-0"
+    x-transition:leave-end="opacity-0 -translate-y-2"
+    class="lg:hidden absolute left-0 right-0 top-full z-50 border-t border-mist/80 bg-paper backdrop-blur-md px-4 py-4 space-y-2 shadow-xl max-h-[calc(100dvh-4rem)] overflow-y-auto"
+  >
+    <nav class="space-y-1" aria-label="Navigasi mobile">
+      {navItems.map((item) => {
+        const isActive = currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href));
+        return (
+          <a
+            href={item.href}
+            @click="mobileOpen = false"
+            class:list={[
+              'flex items-center justify-between px-4 py-3 text-base font-medium rounded-xl transition-all',
+              isActive
+                ? 'bg-vermillion/10 text-vermillion font-bold'
+                : 'text-ink hover:text-indigo hover:bg-slate-100'
+            ]}
+          >
+            <span>{item.label}</span>
+            {isActive && <span class="w-2 h-2 rounded-full bg-vermillion"></span>}
+          </a>
+        );
+      })}
+    </nav>
+
+    <a
+      href="/daftar"
+      @click="mobileOpen = false"
+      class="mt-2 flex items-center justify-center gap-2 w-full bg-vermillion hover:bg-vermillion-hover text-white px-5 py-3 rounded-xl text-sm font-bold shadow-md shadow-vermillion/20 active:scale-[0.98] transition-all"
+    >
+      <span>Konsultasi Sekarang</span>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+      </svg>
+    </a>
+  </div>
+</header>
+
+<!-- Mobile Fixed Bottom CTA Bar -->
+<div class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-paper/90 backdrop-blur-md border-t border-mist p-3 safe-area-inset-bottom shadow-lg">
+  <a
+    href="/daftar"
+    class="group relative flex items-center justify-center gap-2 w-full bg-vermillion hover:bg-vermillion-hover text-white px-5 py-3 rounded-xl text-sm font-bold shadow-md shadow-vermillion/25 active:scale-[0.98] transition-all"
+  >
+    <span>Konsultasi Sekarang</span>
+    <svg class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+    </svg>
+  </a>
+</div>

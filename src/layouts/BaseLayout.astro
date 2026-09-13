@@ -1,0 +1,68 @@
+---
+// BaseLayout.astro — Layout utama untuk semua halaman
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const {
+  title,
+  description = 'LPK HATESE — Lembaga pelatihan kerja resmi yang membimbing tenaga kerja Indonesia ke Jepang melalui jalur sertifikasi JFT-A2/JLPT N4 dan SSW.',
+  ogImage = '/og-default.jpg',
+} = Astro.props;
+
+const siteName = 'HATESE';
+const siteUrl = Astro.site?.toString() || 'https://hatese.co.id';
+const canonicalURL = new URL(Astro.url.pathname, siteUrl);
+---
+
+<!doctype html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Primary Meta Tags -->
+    <title>{title} | {siteName}</title>
+    <meta name="title" content={`${title} | ${siteName}`} />
+    <meta name="description" content={description} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={`${title} | ${siteName}`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(ogImage, siteUrl)} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${title} | ${siteName}`} />
+    <meta name="twitter:description" content={description} />
+
+    <!-- Generator -->
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Preconnect untuk font optimization -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  </head>
+  <body class="min-h-screen flex flex-col bg-paper text-ink antialiased">
+    <Header />
+    <main class="flex-1 pb-20 lg:pb-0">
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      import Alpine from 'alpinejs';
+      (window as typeof window & { Alpine: typeof Alpine }).Alpine = Alpine;
+      Alpine.start();
+    </script>
+  </body>
+</html>

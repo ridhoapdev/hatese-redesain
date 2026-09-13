@@ -1,0 +1,51 @@
+---
+interface Props {
+  name: string;
+  city?: string;
+  company?: string;
+  quote: string;
+  photo?: string;
+}
+
+const { name, city, company, quote, photo } = Astro.props;
+
+const initials = name
+  .split(' ')
+  .map((n) => n[0])
+  .slice(0, 2)
+  .join('')
+  .toUpperCase();
+---
+
+<figure class="bg-paper border border-mist rounded-[--radius-card] p-6 h-full flex flex-col">
+  <blockquote class="flex-1">
+    <p class="text-ink/80 leading-relaxed italic">"{quote}"</p>
+  </blockquote>
+
+  <figcaption class="mt-6 flex items-center gap-3 pt-4 border-t border-mist">
+    {photo ? (
+      <img
+        src={photo}
+        alt={`Foto ${name}`}
+        loading="lazy"
+        class="w-12 h-12 rounded-full object-cover"
+      />
+    ) : (
+      <span
+        class="w-12 h-12 rounded-full bg-indigo text-paper flex items-center justify-center font-display text-sm font-medium flex-shrink-0"
+        aria-hidden="true"
+      >
+        {initials}
+      </span>
+    )}
+
+    <div class="min-w-0">
+      <p class="font-display text-base font-medium text-ink truncate">{name}</p>
+      {(city || company) && (
+        <p class="text-sm text-ink/60 truncate">
+          {city}{city && company && ' · '}{company}
+        </p>
+      )}
+    </div>
+  </figcaption>
+</figure>

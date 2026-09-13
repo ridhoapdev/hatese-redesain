@@ -1,0 +1,52 @@
+---
+// Button.astro — Tactile pressable button
+// Efek "kedalaman" didapat dari border bawah yang lebih gelap (bukan gradient/shadow-glow),
+// lalu saat ditekan border itu hilang dan tombol turun sedikit -> terasa seperti benar-benar ditekan.
+interface Props {
+  variant?: 'primary' | 'secondary' | 'accent';
+  href?: string;
+  type?: 'button' | 'submit';
+  class?: string;
+  iconRight?: boolean;
+}
+
+const {
+  variant = 'primary',
+  href,
+  type = 'button',
+  class: className = '',
+  iconRight = true,
+} = Astro.props;
+
+const base =
+  'group inline-flex items-center justify-center gap-2 font-semibold text-sm rounded-[--radius-button] transition-all duration-150 focus-visible:outline-2 focus-visible:outline-gold focus-visible:outline-offset-2 active:translate-y-[2px]';
+
+const variants = {
+  primary:
+    'bg-vermillion text-paper px-6 py-[11px] border-b-[3px] border-vermillion-hover hover:bg-vermillion-hover active:border-b-0',
+  secondary:
+    'bg-transparent text-indigo border-2 border-b-[4px] border-indigo px-6 py-[9px] hover:bg-indigo hover:text-paper active:border-b-2',
+  // Bug lama: variant ini pakai class "bg-indigo-hover" yang tidak pernah ada di token,
+  // jadi hover-nya diam. Diganti "indigo-deep" yang memang ada di global.css.
+  accent:
+    'bg-indigo text-paper px-6 py-[11px] border-b-[3px] border-indigo-deep hover:bg-indigo-deep active:border-b-0',
+};
+
+const classes = `${base} ${variants[variant]} ${className}`;
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag href={href} type={!href ? type : undefined} class={classes}>
+  <slot />
+  {iconRight && (
+    <svg
+      class="w-4 h-4 transition-transform duration-150 group-hover:translate-x-0.5"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+    </svg>
+  )}
+</Tag>

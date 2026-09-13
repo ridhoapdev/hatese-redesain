@@ -1,0 +1,209 @@
+---
+// JourneyStepper.astro — animasi berurutan 1→2→3→4→5 berdasarkan scroll
+const steps = [
+  { label: 'Daftar', sub: '& Konsultasi' },
+  { label: 'Kelas Intensif', sub: '3 Bulan' },
+  { label: 'Ujian', sub: 'JFT-A2 / SSW' },
+  { label: 'Interview', sub: 'Mensetsu' },
+  { label: 'Berangkat', sub: 'ke Jepang' },
+];
+---
+
+<section class="w-full" data-journey-stepper>
+  <!-- Desktop: horizontal -->
+  <ol class="hidden md:flex items-start justify-between relative">
+    {steps.map((step, i) => (
+      <li class="flex-1 flex flex-col items-center relative" data-step={i}>
+        {i < steps.length - 1 && (
+          <span
+            class="js-step-line absolute top-4 left-1/2 w-full h-px bg-mist transition-colors duration-500"
+            data-line-index={i}
+            aria-hidden="true"
+          ></span>
+        )}
+
+        <span
+          class="js-step-dot relative z-10 w-8 h-8 rounded-full border-2 border-mist bg-paper flex items-center justify-center font-display text-sm font-medium text-ink/50 transition-all duration-300"
+          data-step-index={i}
+        >
+          {i + 1}
+        </span>
+
+        <p
+          class="js-step-label mt-4 text-center font-display text-base font-medium text-ink/60 transition-colors duration-300"
+          data-step-index={i}
+        >
+          {step.label}
+        </p>
+        <p
+          class="js-step-sub text-xs text-ink/50 text-center mt-0.5 transition-colors duration-300"
+          data-step-index={i}
+        >
+          {step.sub}
+        </p>
+      </li>
+    ))}
+  </ol>
+
+  <!-- Mobile: vertikal -->
+  <ol class="md:hidden space-y-6 relative">
+    {steps.map((step, i) => (
+      <li class="flex items-start gap-4 relative" data-step={i}>
+        {i < steps.length - 1 && (
+          <span
+            class="js-step-line absolute left-4 top-8 bottom-[-24px] w-px bg-mist transition-colors duration-500"
+            data-line-index={i}
+            aria-hidden="true"
+          ></span>
+        )}
+        <span
+          class="js-step-dot relative z-10 flex-shrink-0 w-8 h-8 rounded-full border-2 border-mist bg-paper flex items-center justify-center font-display text-sm font-medium text-ink/50 transition-all duration-300"
+          data-step-index={i}
+        >
+          {i + 1}
+        </span>
+        <div>
+          <p
+            class="js-step-label font-display text-base font-medium text-ink/60 transition-colors duration-300"
+            data-step-index={i}
+          >
+            {step.label}
+          </p>
+          <p class="js-step-sub text-sm text-ink/50 mt-0.5 transition-colors duration-300">
+            {step.sub}
+          </p>
+        </div>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<script>
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const stepper = document.querySelector('[data-journey-stepper]');
+
+  if (stepper) {
+    const dots = Array.from(stepper.querySelectorAll<HTMLElement>('.js-step-dot'));
+    const labels = Array.from(stepper.querySelectorAll<HTMLElement>('.js-step-label'));
+    const subs = Array.from(stepper.querySelectorAll<HTMLElement>('.js-step-sub'));
+    const lines = Array.from(stepper.querySelectorAll<HTMLElement>('.js-step-line'));
+
+    let currentActive = -1;
+    let rafId: number | null = null;
+
+    /**
+     * Aktifkan step sampai index tertentu secara berurutan.
+     * Kalau target > currentActive, animasi maju satu per satu.
+     * Kalau target < currentActive (user scroll ke atas), langsung set tanpa animasi.
+     */
+    const setActive = (target: number) => {
+      if (target === currentActive) return;
+
+      // Scroll ke atas → set langsung, tanpa animasi berurutan
+      if (target < currentActive) {
+        currentActive = target;
+        applyStyles(target);
+        return;
+      }
+
+      // Animasi maju satu per satu
+      if (rafId) cancelAnimationFrame(rafId);
+
+      const stepForward = () => {
+        if (currentActive >= target) {
+          rafId = null;
+          return;
+        }
+        currentActive += 1;
+        applyStyles(currentActive);
+
+        if (prefersReduced) {
+          // Skip delay kalau user minta reduced motion
+          rafId = requestAnimationFrame(stepForward);
+        } else {
+          setTimeout(() => {
+            rafId = requestAnimationFrame(stepForward);
+          }, 180);
+        }
+      };
+
+      rafId = requestAnimationFrame(stepForward);
+    };
+
+    const applyStyles = (index: number) => {
+      dots.forEach((dot, i) => {
+        const active = i <= index;
+        dot.classList.toggle('border-vermillion', active);
+        dot.classList.toggle('bg-vermillion', active);
+        dot.classList.toggle('text-white', active);
+        dot.classList.toggle('border-mist', !active);
+        dot.classList.toggle('bg-paper', !active);
+        dot.classList.toggle('text-ink/50', !active);
+
+        // Efek pop singkat saat baru aktif
+        if (i === index && !prefersReduced) {
+          dot.animate(
+            [{ transform: 'scale(1)' }, { transform: 'scale(1.15)' }, { transform: 'scale(1)' }],
+            { duration: 300, easing: 'ease-out' }
+          );
+        }
+      });
+
+      labels.forEach((label, i) => {
+        const active = i <= index;
+        label.classList.toggle('text-indigo', active);
+        label.classList.toggle('text-ink/60', !active);
+      });
+
+      subs.forEach((sub, i) => {
+        const active = i <= index;
+        sub.classList.toggle('text-ink/70', active);
+        sub.classList.toggle('text-ink/50', !active);
+      });
+
+      // Garis penghubung ikut aktif kalau step berikutnya sudah aktif
+      lines.forEach((line, i) => {
+        const active = i < index;
+        line.classList.toggle('bg-vermillion/40', active);
+        line.classList.toggle('bg-mist', !active);
+      });
+    };
+
+    /**
+     * Tentukan step mana yang harus aktif berdasarkan posisi scroll.
+     * Kita hitung: berapa banyak titik yang sudah melewati 60% viewport.
+     */
+    const updateActive = () => {
+      const triggerY = window.innerHeight * 0.6;
+      let newActive = -1;
+
+      dots.forEach((dot, i) => {
+        const rect = dot.getBoundingClientRect();
+        if (rect.top < triggerY) {
+          newActive = i;
+        }
+      });
+
+      if (newActive !== currentActive) {
+        setActive(newActive);
+      }
+    };
+
+    // Throttle pakai rAF
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        updateActive();
+        ticking = false;
+      });
+    };
+
+    // Set state awal (kalau stepper sudah terlihat saat load)
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    updateActive();
+  }
+</script>

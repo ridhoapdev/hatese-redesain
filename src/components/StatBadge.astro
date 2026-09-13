@@ -1,0 +1,18 @@
+---
+interface Props {
+  value: string;
+  label: string;
+  class?: string;
+}
+
+const { value, label, class: className = '' } = Astro.props;
+---
+
+<div class:list={['text-center lg:text-left', className]}>
+  <p class="font-display text-4xl lg:text-5xl font-semibold text-indigo">
+    {value}
+  </p>
+  <p class="mt-2 text-sm lg:text-base text-ink/70">
+    {label}
+  </p>
+</div>

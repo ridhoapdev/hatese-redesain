@@ -1,0 +1,249 @@
+---
+// src/pages/faq.astro — FAQ lengkap
+import * as icons from 'lucide-astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import FaqAccordion from '../components/FaqAccordion.astro';
+
+// ===== Kategori FAQ lengkap =====
+const faqCategories = [
+  {
+    name: 'Pendaftaran',
+    iconName: 'UserPlus',
+    items: [
+      {
+        question: 'Apa syarat utama untuk mendaftar?',
+        answer: 'Usia minimal 17 tahun, sehat jasmani dan rohani, serta memiliki kemauan belajar bahasa Jepang dari nol. Tidak diperlukan pengalaman bahasa Jepang sebelumnya. Untuk beberapa bidang kerja tertentu, ada syarat tambahan seperti tinggi badan minimal dan kondisi kesehatan spesifik.',
+      },
+      {
+        question: 'Apakah harus bisa bahasa Jepang dulu?',
+        answer: 'Tidak. Kelas kami dirancang untuk pemula total — dari nol sampai siap mengikuti ujian JFT-A2/JLPT N4. Kalau Anda sudah punya dasar bahasa Jepang (misalnya N5), bisa langsung ikut Kelas Pemantapan JFT & SSW.',
+      },
+      {
+        question: 'Berapa lama masa pendidikan?',
+        answer: 'Program inti berlangsung sekitar 3 bulan kelas intensif, dilanjutkan dengan persiapan ujian dan pendampingan interview. Total waktu dari daftar sampai berangkat biasanya 5–7 bulan, tergantung kecepatan belajar dan ketersediaan lowongan.',
+      },
+      {
+        question: 'Apakah ada batasan usia?',
+        answer: 'Usia minimal 17 tahun dan maksimal umumnya 30 tahun untuk sebagian besar bidang SSW. Beberapa bidang tertentu (misalnya perawatan lansia) menerima sampai usia 35 tahun. Konsultasikan usia Anda saat sesi konsultasi untuk memastikan.',
+      },
+      {
+        question: 'Bagaimana kalau saya tinggal di luar Cirebon?',
+        answer: 'Anda tetap bisa ikut kelas online via Zoom. Untuk kelas offline, tersedia mess/asrama gratis selama masa pelatihan. Banyak siswa HATESE berasal dari luar Jawa Barat.',
+      },
+    ],
+  },
+  {
+    name: 'Biaya & Dana Talangan',
+    iconName: 'Wallet',
+    items: [
+      {
+        question: 'Berapa biaya pendaftaran?',
+        answer: 'Investasi belajar mulai dari Rp2 jutaan per bulan selama 3 bulan. Rincian lengkap (apa saja yang termasuk, apa yang tidak termasuk) akan dijelaskan transparan saat konsultasi — tidak ada biaya tersembunyi.',
+      },
+      {
+        question: 'Apakah ada dana talangan?',
+        answer: 'Ya. HATESE menyediakan skema dana talangan untuk membantu siswa yang terkendala biaya. Detail dan syaratnya akan dijelaskan saat konsultasi. Dana talangan biasanya dikembalikan secara bertahap dari gaji di Jepang.',
+      },
+      {
+        question: 'Apakah mess/asrama benar-benar gratis?',
+        answer: 'Ya, untuk siswa kelas offline, mess/asrama disediakan gratis selama masa pelatihan supaya bisa fokus belajar tanpa memikirkan biaya hidup.',
+      },
+      {
+        question: 'Apa saja yang termasuk dalam biaya?',
+        answer: 'Biaya mencakup: kelas bahasa Jepang 3 bulan, modul materi & bank soal, mess/asrama (untuk offline), kaos olahraga, pendampingan ujian JFT & SSW, matching job, dan pendampingan keberangkatan. Biaya yang tidak termasuk: tiket pesawat, biaya MCU resmi, dan biaya dokumen (paspor, dll).',
+      },
+      {
+        question: 'Bagaimana cara pembayarannya?',
+        answer: 'Pembayaran bisa dilakukan bertahap (per bulan) atau sekaligus di awal dengan potongan khusus. Metode pembayaran: transfer bank, atau tunai di kantor. Detail akan dijelaskan saat konsultasi.',
+      },
+    ],
+  },
+  {
+    name: 'Proses & Keberangkatan',
+    iconName: 'Plane',
+    items: [
+      {
+        question: 'Apa itu Pra-MCU dan kenapa perlu?',
+        answer: 'Pra-MCU (Medical Check-Up) adalah pemeriksaan kesehatan awal untuk memastikan calon siswa memenuhi syarat kesehatan sebelum melanjutkan ke tahap pelatihan dan keberangkatan. Ini mencegah siswa membuang waktu dan biaya di tahap lanjutan kalau ternyata ada kendala kesehatan.',
+      },
+      {
+        question: 'Apa itu SSW dan JFT?',
+        answer: 'SSW (Specified Skilled Worker) adalah status visa kerja resmi Jepang untuk tenaga kerja terampil. JFT-A2 adalah ujian sertifikasi bahasa Jepang (Japanese Foundation Test) yang menjadi salah satu syarat SSW. Alternatifnya adalah JLPT N4. Keduanya setara untuk keperluan SSW.',
+      },
+      {
+        question: 'Berapa lama proses dari daftar sampai berangkat?',
+        answer: 'Umumnya 5–7 bulan: 3 bulan kelas intensif + 1–2 bulan persiapan ujian & interview + 1–2 bulan pengurusan dokumen keberangkatan. Tergantung kecepatan belajar dan ketersediaan lowongan yang cocok.',
+      },
+      {
+        question: 'Apakah HATESE resmi?',
+        answer: 'Ya. PT. Harapan Terang Sejahtera terdaftar resmi di Kementerian Hukum dan HAM RI dengan SK No. 0047730.AH.01.01 Tahun 2023. Nomor SK ini bisa diverifikasi langsung di sistem Kemenkumham.',
+      },
+      {
+        question: 'Bagaimana kalau saya tidak lulus ujian JFT/SSW?',
+        answer: 'Anda bisa mengulang ujian. HATESE akan terus mendampingi sampai lulus — tidak ada batas waktu tambahan yang dikenakan biaya besar. Selama masa pemantapan, Anda tetap bisa mengikuti kelas tambahan tanpa biaya ekstra.',
+      },
+      {
+        question: 'Apakah gaji di Jepang benar-benar besar?',
+        answer: 'Gaji bervariasi sesuai bidang dan kota. Rata-rata ¥180.000–¥280.000 per bulan (setara Rp18–28 juta), jauh di atas UMR Indonesia. Namun perlu diingat: biaya hidup di Jepang juga lebih tinggi, dan sebagian gaji dipotong untuk pajak, asuransi, dan tempat tinggal.',
+      },
+      {
+        question: 'Apakah bisa pulang ke Indonesia saat masa kontrak?',
+        answer: 'Ya. Setiap pekerja SSW punya hak cuti tahunan. Banyak alumni HATESE pulang ke Indonesia setahun sekali untuk berkumpul dengan keluarga, biasanya saat musim libur (Obon atau Tahun Baru).',
+      },
+    ],
+  },
+  {
+    name: 'Kehidupan di Jepang',
+    iconName: 'Home',
+    items: [
+      {
+        question: 'Di mana saya akan tinggal di Jepang?',
+        answer: 'Tergantung perusahaan. Sebagian besar perusahaan menyediakan dormitori (ryou) dengan biaya sewa sangat murah atau gratis. Sebagian lagi memberikan subsidi sewa. Detail tempat tinggal akan dijelaskan saat kontrak kerja ditandatangani.',
+      },
+      {
+        question: 'Bagaimana kalau saya tidak bisa beradaptasi?',
+        answer: 'HATESE tetap mendampingi alumni yang sudah berangkat. Kami punya grup komunikasi dengan alumni dan koordinator yang siap membantu kalau ada kendala adaptasi, komunikasi dengan perusahaan, atau kebutuhan mendesak.',
+      },
+      {
+        question: 'Apakah bisa belajar sambil kerja?',
+        answer: 'Bisa. Banyak alumni yang melanjutkan belajar bahasa Jepang (ke level N3/N2) setelah mulai bekerja, untuk memperpanjang kontrak atau naik posisi. Namun prioritas utama tetap pekerjaan.',
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="FAQ — Pertanyaan yang Sering Diajukan"
+  description="Jawaban lengkap atas pertanyaan tentang pendaftaran, biaya, proses keberangkatan, dan kehidupan di Jepang bersama HATESE."
+>
+  <!-- ============ HERO ============ -->
+  <section class="bg-indigo text-paper">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <nav class="mb-6 text-sm text-paper/60" aria-label="Breadcrumb">
+          <ol class="flex items-center gap-2 flex-wrap">
+            <li><a href="/" class="hover:text-gold transition-colors">Beranda</a></li>
+            <li aria-hidden="true">/</li>
+            <li class="text-paper">FAQ</li>
+          </ol>
+        </nav>
+
+        <h1 class="font-display text-4xl sm:text-5xl font-semibold leading-[1.05]">
+          Pertanyaan yang <br class="hidden sm:block" />
+          <span class="text-gold">Sering Diajukan.</span>
+        </h1>
+
+        <p class="mt-6 text-lg text-paper/80 leading-relaxed max-w-[60ch]">
+          Semua yang perlu kamu tahu sebelum memulai perjalanan ke Jepang — dari syarat pendaftaran sampai kehidupan di sana.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ PER KATEGORI ============ -->
+  <section class="bg-paper">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+
+   
+
+      <!-- Accordion FAQ -->
+      <FaqAccordion categories={faqCategories.map((c) => ({ name: c.name, items: c.items }))} />
+
+    </div>
+  </section>
+
+  <!-- ============ MASIH ADA PERTANYAAN? ============ -->
+  <section class="bg-mist/40">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
+      <div class="bg-paper border border-mist rounded-[--radius-card] p-8 lg:p-12 text-center">
+        <span class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-indigo/10 text-indigo mb-5">
+          <icons.MessageCircleQuestion class="w-7 h-7" stroke-width={1.75} />
+        </span>
+
+        <h2 class="font-display text-2xl lg:text-3xl font-semibold text-ink">
+          Masih Ada Pertanyaan?
+        </h2>
+        <p class="mt-4 text-lg text-ink/70 max-w-[52ch] mx-auto">
+          Kalau pertanyaanmu belum terjawab di atas, langsung tanya ke tim HATESE. Kami akan menjawab dengan jujur dan transparan — tanpa janji manis.
+        </p>
+
+        <div class="mt-8 flex flex-wrap justify-center gap-3">
+          <Button variant="primary" href="/daftar" iconRight>
+            Konsultasi Sekarang
+          </Button>
+          <a
+            href="https://wa.me/6281234567890?text=Halo%20HATESE%2C%20saya%20punya%20pertanyaan%20yang%20belum%20terjawab%20di%20FAQ."
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-5 py-2.5 text-indigo border-[1.5px] border-indigo rounded-[--radius-button] hover:bg-indigo hover:text-white transition-colors"
+          >
+            <icons.MessageCircle class="w-4 h-4" stroke-width={2} />
+            Chat WhatsApp
+          </a>
+        </div>
+
+        <!-- TODO: ganti nomor WA dengan data resmi HATESE -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LINK TERKAIT ============ -->
+  <section class="bg-paper">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
+      <div class="text-center mb-10">
+        <h2 class="font-display text-2xl lg:text-3xl font-semibold text-ink">
+          Pelajari Lebih Lanjut
+        </h2>
+      </div>
+
+      <div class="grid sm:grid-cols-3 gap-4 lg:gap-6">
+        <a
+          href="/program"
+          class="group bg-paper border border-mist rounded-[--radius-card] p-6 hover:border-indigo transition-colors"
+        >
+          <span class="inline-flex items-center justify-center w-10 h-10 rounded-[--radius-card] bg-indigo/10 text-indigo mb-4">
+            <icons.GraduationCap class="w-5 h-5" stroke-width={1.75} />
+          </span>
+          <h3 class="font-display text-lg font-medium text-ink group-hover:text-indigo transition-colors">
+            Program & Kelas
+          </h3>
+          <p class="mt-2 text-sm text-ink/70">
+            Pilihan kelas bahasa Jepang dan keterampilan kerja.
+          </p>
+        </a>
+
+        <a
+          href="/karier"
+          class="group bg-paper border border-mist rounded-[--radius-card] p-6 hover:border-indigo transition-colors"
+        >
+          <span class="inline-flex items-center justify-center w-10 h-10 rounded-[--radius-card] bg-indigo/10 text-indigo mb-4">
+            <icons.Briefcase class="w-5 h-5" stroke-width={1.75} />
+          </span>
+          <h3 class="font-display text-lg font-medium text-ink group-hover:text-indigo transition-colors">
+            Bidang Kerja
+          </h3>
+          <p class="mt-2 text-sm text-ink/70">
+            14 bidang SSW resmi yang bisa kamu pilih.
+          </p>
+        </a>
+
+        <a
+          href="/kisah-alumni"
+          class="group bg-paper border border-mist rounded-[--radius-card] p-6 hover:border-indigo transition-colors"
+        >
+          <span class="inline-flex items-center justify-center w-10 h-10 rounded-[--radius-card] bg-indigo/10 text-indigo mb-4">
+            <icons.Users class="w-5 h-5" stroke-width={1.75} />
+          </span>
+          <h3 class="font-display text-lg font-medium text-ink group-hover:text-indigo transition-colors">
+            Kisah Alumni
+          </h3>
+          <p class="mt-2 text-sm text-ink/70">
+            Cerita nyata dari mereka yang sudah berangkat.
+          </p>
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

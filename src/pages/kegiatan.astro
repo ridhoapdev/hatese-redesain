@@ -1,0 +1,211 @@
+---
+// src/pages/kegiatan.astro — Kegiatan Kami
+import { getCollection, render } from 'astro:content';
+import * as icons from 'lucide-astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+
+const activities = (await getCollection('activities')).sort(
+  (a, b) => a.data.order - b.data.order
+);
+
+// Render semua activity content
+const rendered = await Promise.all(
+  activities.map(async (activity) => {
+    const { Content } = await render(activity);
+    const IconComponent = (icons as Record<string, any>)[activity.data.iconName] ?? icons.Camera;
+    return { activity, Content, IconComponent };
+  })
+);
+---
+
+<BaseLayout
+  title="Kegiatan Kami"
+  description="Di balik layar persiapan menuju Jepang — setiap siswa HATESE melalui rangkaian kegiatan ini sebelum resmi berangkat kerja."
+>
+  <!-- ============ HERO ============ -->
+  <section class="bg-indigo text-paper">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-semibold leading-[1.05]">
+          Di Balik Layar <br class="hidden sm:block" />
+          <span class="text-gold">Persiapan Menuju Jepang.</span>
+        </h1>
+        <p class="mt-6 text-lg text-paper/80 leading-relaxed max-w-[60ch]">
+          Setiap siswa HATESE melalui rangkaian kegiatan ini sebelum resmi berangkat kerja. Ini bukti nyata — bukan sekadar janji.
+        </p>
+
+        <!-- Quick nav ke tiap kegiatan -->
+        <nav class="mt-8 flex flex-wrap gap-2" aria-label="Navigasi kegiatan">
+          {activities.map((activity) => (
+            <a
+              href={`#${activity.id}`}
+              class="text-xs font-medium px-3 py-1.5 bg-paper/10 hover:bg-paper/20 rounded-full transition-colors"
+            >
+              {activity.data.title}
+            </a>
+          ))}
+        </nav>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DAFTAR KEGIATAN ============ -->
+  <div class="bg-paper">
+    {rendered.map(({ activity, Content, IconComponent }, index) => {
+      const isReversed = index % 2 === 1;
+      return (
+        <section
+          id={activity.id}
+          class:list={[
+            'scroll-mt-24',
+            index !== 0 && 'border-t border-mist',
+          ]}
+        >
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+            <div class:list={[
+              'grid lg:grid-cols-2 gap-10 lg:gap-16 items-center',
+              isReversed && 'lg:[&>*:first-child]:order-2',
+            ]}>
+
+              <!-- Kolom gambar -->
+              <div class="relative">
+                {activity.data.image ? (
+                  <div class="aspect-[4/3] rounded-[--radius-card] overflow-hidden bg-mist">
+                    <img
+                      src={activity.data.image}
+                      alt={`Dokumentasi kegiatan ${activity.data.title}`}
+                      loading="lazy"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  
+                  <div class="aspect-[4/3] rounded-[--radius-card] overflow-hidden bg-gradient-to-br from-indigo/10 to-mist flex items-center justify-center">
+                    <IconComponent class="w-20 h-20 text-indigo/40" stroke-width={1.5} />
+                  </div>
+                )}
+
+                <!-- Nomor urut sebagai penanda sequence (kegiatan memang berurutan) -->
+                <span class="absolute -top-4 -left-4 lg:-top-6 lg:-left-6 w-12 h-12 lg:w-16 lg:h-16 rounded-full bg-vermillion text-white flex items-center justify-center font-display text-lg lg:text-2xl font-semibold shadow-md">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+              </div>
+
+              <!-- Kolom teks -->
+              <div>
+                <!-- Icon + label kecil -->
+                <div class="flex items-center gap-2 text-sm font-medium text-indigo mb-3">
+                  <IconComponent class="w-4 h-4" stroke-width={2} />
+                  <span>Kegiatan {String(index + 1).padStart(2, '0')} dari {String(activities.length).padStart(2, '0')}</span>
+                </div>
+
+                <h2 class="font-display text-3xl lg:text-4xl font-semibold text-ink leading-tight">
+                  {activity.data.title}
+                </h2>
+
+                <p class="mt-4 text-lg text-ink/70 leading-relaxed max-w-[60ch]">
+                  {activity.data.description}
+                </p>
+
+                <!-- Konten markdown -->
+                <div class="mt-6 prose prose-slate max-w-[60ch] prose-headings:font-display prose-headings:text-ink prose-p:text-ink/70 prose-li:text-ink/70 prose-strong:text-ink">
+                  <Content />
+                </div>
+
+                <!-- Quote kalau ada -->
+                {activity.data.quote && (
+                  <blockquote class="mt-8 pl-5 border-l-[3px] border-vermillion">
+                    <p class="text-ink/80 italic leading-relaxed">
+                      "{activity.data.quote}"
+                    </p>
+                    {activity.data.quoteAuthor && (
+                      <footer class="mt-2 text-sm text-ink/60 not-italic">
+                        — {activity.data.quoteAuthor}
+                      </footer>
+                    )}
+                  </blockquote>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    })}
+  </div>
+
+  <!-- ============ CTA PENUTUP ============ -->
+  <section class="bg-indigo text-paper">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24 text-center">
+      <h2 class="font-display text-3xl lg:text-4xl font-semibold">
+        Ingin Jadi Bagian dari Kegiatan Berikutnya?
+      </h2>
+      <p class="mt-4 text-lg text-paper/80 max-w-[52ch] mx-auto">
+        Konsultasi gratis dulu — tim kami akan menjelaskan alur, biaya, dan jadwal angkatan terdekat.
+      </p>
+      <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <Button variant="primary" href="/daftar" iconRight>
+          Konsultasi Sekarang
+        </Button>
+        <a href="/kisah-alumni" class="inline-flex items-center gap-2 px-5 py-2.5 text-paper border-[1.5px] border-paper/40 rounded-[--radius-button] hover:bg-paper/10 transition-colors">
+          Lihat Kisah Alumni
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCROLL REVEAL (fade-in ketika di-scroll) ============ -->
+  <style>
+    section.js-reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+    section.js-reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      section.js-reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+    }
+  </style>
+
+  <script>
+    function initScrollReveal() {
+      const sections = document.querySelectorAll('section');
+      if (!sections.length) return;
+
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      sections.forEach((el) => el.classList.add('js-reveal'));
+
+      if (prefersReduced || !('IntersectionObserver' in window)) {
+        sections.forEach((el) => el.classList.add('is-visible'));
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.12, rootMargin: '0px 0px -8% 0px' }
+      );
+
+      sections.forEach((el) => observer.observe(el));
+    }
+
+    // Jalankan saat load pertama, dan saat navigasi lewat Astro View Transitions (jika dipakai)
+    initScrollReveal();
+    document.addEventListener('astro:page-load', initScrollReveal);
+  </script>
+</BaseLayout>
