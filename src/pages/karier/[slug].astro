@@ -33,9 +33,9 @@ const IconComponent = (icons as Record<string, any>)[data.iconName] ?? icons.Bri
       <!-- Breadcrumb -->
       <nav class="mb-6 text-sm text-paper/60" aria-label="Breadcrumb">
         <ol class="flex items-center gap-2 flex-wrap">
-          <li><a href="/" class="hover:text-gold transition-colors">Beranda</a></li>
+          <li><a href={import.meta.env.BASE_URL} class="hover:text-gold transition-colors">Beranda</a></li>
           <li aria-hidden="true">/</li>
-          <li><a href="/karier" class="hover:text-gold transition-colors">Karier di Jepang</a></li>
+          <li><a href={`${import.meta.env.BASE_URL}karier`} class="hover:text-gold transition-colors">Karier di Jepang</a></li>
           <li aria-hidden="true">/</li>
           <li class="text-paper">{data.title}</li>
         </ol>
@@ -150,12 +150,12 @@ const IconComponent = (icons as Record<string, any>)[data.iconName] ?? icons.Bri
               </p>
             </div>
 
-            <Button variant="primary" href="/daftar" iconRight class="w-full">
+            <Button variant="primary" href={`${import.meta.env.BASE_URL}daftar`} iconRight class="w-full">
               Konsultasi Sekarang
             </Button>
 
             <div class="pt-6 border-t border-mist">
-              <a href="/karier" class="text-indigo hover:text-vermillion transition-colors inline-flex items-center gap-1.5 text-sm">
+              <a href={`${import.meta.env.BASE_URL}karier`} class="text-indigo hover:text-vermillion transition-colors inline-flex items-center gap-1.5 text-sm">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                 </svg>
@@ -178,10 +178,10 @@ const IconComponent = (icons as Record<string, any>)[data.iconName] ?? icons.Bri
         Langkah pertama adalah konsultasi — gratis, tanpa komitmen.
       </p>
       <div class="mt-8 flex flex-wrap justify-center gap-3">
-        <Button variant="primary" href="/daftar" iconRight>
+        <Button variant="primary" href={`${import.meta.env.BASE_URL}daftar`} iconRight>
           Konsultasi Sekarang
         </Button>
-        <a href="/program" class="inline-flex items-center gap-2 px-5 py-2.5 text-paper border-[1.5px] border-paper/40 rounded-[--radius-button] hover:bg-paper/10 transition-colors">
+        <a href={`${import.meta.env.BASE_URL}program`} class="inline-flex items-center gap-2 px-5 py-2.5 text-paper border-[1.5px] border-paper/40 rounded-[--radius-button] hover:bg-paper/10 transition-colors">
           Lihat Program Belajar
         </a>
       </div>

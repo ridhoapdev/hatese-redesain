@@ -1,20 +1,21 @@
 ---
 // Footer konsisten di semua halaman (sesuai 01-site-architecture.md bagian D)
 const currentYear = new Date().getFullYear();
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const footerLinks = {
   program: [
-    { label: 'Kelas Reguler', href: '/program/reguler' },
-    { label: 'Kelas Online', href: '/program/online' },
-    { label: 'Kelas Karyawan', href: '/program/karyawan' },
-    { label: 'Pemantapan JFT & SSW', href: '/program/pemantapan-jft-ssw' },
+    { label: 'Kelas Reguler', href: `${base}/program/reguler` },
+    { label: 'Kelas Online', href: `${base}/program/online` },
+    { label: 'Kelas Karyawan', href: `${base}/program/karyawan` },
+    { label: 'Pemantapan JFT & SSW', href: `${base}/program/pemantapan-jft-ssw` },
   ],
   informasi: [
-    { label: 'Karier di Jepang', href: '/karier' },
-    { label: 'Kegiatan Kami', href: '/kegiatan' },
-    { label: 'Kisah Alumni', href: '/kisah-alumni' },
-    { label: 'Tentang Kami', href: '/tentang' },
-    { label: 'FAQ', href: '/faq' }, 
+    { label: 'Karier di Jepang', href: `${base}/karier` },
+    { label: 'Kegiatan Kami', href: `${base}/kegiatan` },
+    { label: 'Kisah Alumni', href: `${base}/kisah-alumni` },
+    { label: 'Tentang Kami', href: `${base}/tentang` },
+    { label: 'FAQ', href: `${base}/faq` }, 
   ],
 };
 ---

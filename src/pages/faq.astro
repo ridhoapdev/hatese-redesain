@@ -124,7 +124,7 @@ const faqCategories = [
       <div class="max-w-3xl">
         <nav class="mb-6 text-sm text-paper/60" aria-label="Breadcrumb">
           <ol class="flex items-center gap-2 flex-wrap">
-            <li><a href="/" class="hover:text-gold transition-colors">Beranda</a></li>
+            <li><a href={import.meta.env.BASE_URL} class="hover:text-gold transition-colors">Beranda</a></li>
             <li aria-hidden="true">/</li>
             <li class="text-paper">FAQ</li>
           </ol>
@@ -170,7 +170,7 @@ const faqCategories = [
         </p>
 
         <div class="mt-8 flex flex-wrap justify-center gap-3">
-          <Button variant="primary" href="/daftar" iconRight>
+          <Button variant="primary" href={`${import.meta.env.BASE_URL}daftar`} iconRight>
             Konsultasi Sekarang
           </Button>
           <a
@@ -200,7 +200,7 @@ const faqCategories = [
 
       <div class="grid sm:grid-cols-3 gap-4 lg:gap-6">
         <a
-          href="/program"
+          href={`${import.meta.env.BASE_URL}program`}
           class="group bg-paper border border-mist rounded-[--radius-card] p-6 hover:border-indigo transition-colors"
         >
           <span class="inline-flex items-center justify-center w-10 h-10 rounded-[--radius-card] bg-indigo/10 text-indigo mb-4">
@@ -215,7 +215,7 @@ const faqCategories = [
         </a>
 
         <a
-          href="/karier"
+          href={`${import.meta.env.BASE_URL}karier`}
           class="group bg-paper border border-mist rounded-[--radius-card] p-6 hover:border-indigo transition-colors"
         >
           <span class="inline-flex items-center justify-center w-10 h-10 rounded-[--radius-card] bg-indigo/10 text-indigo mb-4">
@@ -230,7 +230,7 @@ const faqCategories = [
         </a>
 
         <a
-          href="/kisah-alumni"
+          href={`${import.meta.env.BASE_URL}kisah-alumni`}
           class="group bg-paper border border-mist rounded-[--radius-card] p-6 hover:border-indigo transition-colors"
         >
           <span class="inline-flex items-center justify-center w-10 h-10 rounded-[--radius-card] bg-indigo/10 text-indigo mb-4">

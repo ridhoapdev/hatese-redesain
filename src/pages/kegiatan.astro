@@ -144,10 +144,10 @@ const rendered = await Promise.all(
         Konsultasi gratis dulu — tim kami akan menjelaskan alur, biaya, dan jadwal angkatan terdekat.
       </p>
       <div class="mt-8 flex flex-wrap justify-center gap-3">
-        <Button variant="primary" href="/daftar" iconRight>
+        <Button variant="primary" href={`${import.meta.env.BASE_URL}daftar`} iconRight>
           Konsultasi Sekarang
         </Button>
-        <a href="/kisah-alumni" class="inline-flex items-center gap-2 px-5 py-2.5 text-paper border-[1.5px] border-paper/40 rounded-[--radius-button] hover:bg-paper/10 transition-colors">
+        <a href={`${import.meta.env.BASE_URL}kisah-alumni`} class="inline-flex items-center gap-2 px-5 py-2.5 text-paper border-[1.5px] border-paper/40 rounded-[--radius-button] hover:bg-paper/10 transition-colors">
           Lihat Kisah Alumni
         </a>
       </div>

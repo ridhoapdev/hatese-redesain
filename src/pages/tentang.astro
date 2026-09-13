@@ -333,7 +333,7 @@ const values = [
           </address>
 
           <div class="mt-8">
-            <Button variant="primary" href="/daftar" iconRight>
+            <Button variant="primary" href={`${import.meta.env.BASE_URL}daftar`} iconRight>
               Konsultasi Sekarang
             </Button>
           </div>
@@ -366,10 +366,10 @@ const values = [
         Konsultasi gratis — tim kami akan menjelaskan alur, biaya, dan peluang yang paling cocok untukmu.
       </p>
       <div class="mt-8 flex flex-wrap justify-center gap-3">
-        <Button variant="primary" href="/daftar" iconRight>
+        <Button variant="primary" href={`${import.meta.env.BASE_URL}daftar`} iconRight>
           Konsultasi Sekarang
         </Button>
-        <a href="/kegiatan" class="inline-flex items-center gap-2 px-5 py-2.5 text-paper border-[1.5px] border-paper/40 rounded-[--radius-button] hover:bg-paper/10 transition-colors">
+        <a href={`${import.meta.env.BASE_URL}kegiatan`} class="inline-flex items-center gap-2 px-5 py-2.5 text-paper border-[1.5px] border-paper/40 rounded-[--radius-button] hover:bg-paper/10 transition-colors">
           Lihat Kegiatan Kami
         </a>
       </div>

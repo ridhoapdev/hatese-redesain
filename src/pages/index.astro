@@ -8,6 +8,8 @@ import JourneyStepper from "../components/JourneyStepper.astro";
 import TestimonialCard from "../components/TestimonialCard.astro";
 import FaqAccordion from "../components/FaqAccordion.astro";
 
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
 // ===== Data Statistik =====
 const stats = [
   { target: 1000, suffix: "+", label: "Siswa Terdaftar" },
@@ -198,7 +200,7 @@ const faqCategories = [
           <!-- Hero Action CTA Group -->
           <div class="mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4 js-hero-cta">
             <a
-              href="/daftar"
+              href={`${base}/daftar`}
               class="group inline-flex items-center justify-center gap-2.5 bg-vermillion hover:bg-vermillion-hover text-white px-7 py-3.5 rounded-xl text-base font-bold shadow-lg shadow-vermillion/25 hover:shadow-xl hover:shadow-vermillion/35 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
             >
               <span>Konsultasi Sekarang</span>
@@ -206,7 +208,7 @@ const faqCategories = [
             </a>
 
             <a
-              href="/program"
+              href={`${base}/program`}
               class="inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-slate-700 hover:text-indigo border border-slate-300 px-6 py-3.5 rounded-xl text-base font-semibold shadow-sm hover:shadow active:scale-[0.99] transition-all duration-150"
             >
               <span>Lihat Program</span>
@@ -422,7 +424,7 @@ const faqCategories = [
           </ul>
 
           <a
-            href="/tentang"
+            href={`${base}/tentang`}
             class="mt-8 inline-flex items-center gap-1.5 text-amber-300 font-medium text-sm hover:gap-2.5 transition-all"
           >
             Selengkapnya tentang kami
@@ -644,7 +646,7 @@ const faqCategories = [
         <p class="text-slate-600 max-w-[52ch]">
           Ingin lihat pilihan kelas berbayarnya? Semua kelas mengarah ke tujuan yang sama, yaitu siap kerja di Jepang.
         </p>
-        <Button variant="secondary" href="/program" iconRight>
+        <Button variant="secondary" href={`${base}/program`} iconRight>
           Lihat Program & Kelas
         </Button>
       </div>
@@ -683,7 +685,7 @@ const faqCategories = [
             Jepang.
           </p>
         </div>
-        <Button variant="secondary" href="/kisah-alumni" iconRight>
+        <Button variant="secondary" href={`${base}/kisah-alumni`} iconRight>
           Lihat Semua Kisah Alumni
         </Button>
       </div>
@@ -744,11 +746,11 @@ const faqCategories = [
         peluang yang paling cocok buat kamu.
       </p>
       <div class="mt-8 flex flex-wrap justify-center gap-3">
-        <Button variant="primary" href="/daftar" iconRight>
+        <Button variant="primary" href={`${base}/daftar`} iconRight>
           Konsultasi Sekarang
         </Button>
         <a
-          href="/karier"
+          href={`${base}/karier`}
           class="inline-flex items-center gap-2 px-6 py-3 text-paper border border-paper/40 rounded-xl font-semibold hover:bg-paper/10 transition-colors"
         >
           Lihat Bidang Kerja

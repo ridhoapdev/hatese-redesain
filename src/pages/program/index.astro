@@ -52,11 +52,11 @@ const benefits = [
             Program pelatihan intensif JFT-Basic & SSW terstruktur dengan pendampingan hingga keberangkatan. Biaya terjangkau mulai Rp2 Juta/bulan.
           </p>
           <div class="mt-8 flex flex-wrap gap-3">
-            <Button variant="primary" href="/daftar" iconRight>
+            <Button variant="primary" href={`${import.meta.env.BASE_URL}daftar`} iconRight>
               Konsultasi Pilihan Kelas
             </Button>
             <a
-              href="/karier"
+              href={`${import.meta.env.BASE_URL}karier`}
               class="group inline-flex items-center gap-2 px-6 py-[11px] text-sm font-medium text-paper bg-paper/10 border-b-[3px] border-paper/25 rounded-[--radius-button] transition-all duration-150 hover:bg-paper/15 active:translate-y-[2px] active:border-b-0"
             >
               Lihat Bidang Kerja
@@ -130,7 +130,7 @@ const benefits = [
           class="opacity-0 translate-y-6 transition-all duration-700 ease-out mb-6"
         >
           <a
-            href={`/program/${featuredProgram.id}`}
+            href={`${import.meta.env.BASE_URL}program/${featuredProgram.id}`}
             class="group grid lg:grid-cols-2 gap-8 bg-paper border border-mist rounded-[--radius-card] p-6 lg:p-8 shadow-sm hover:shadow-xl transition-all duration-300"
           >
             <div class="relative aspect-[16/10] lg:aspect-auto rounded-[--radius-card] overflow-hidden bg-mist">
@@ -209,11 +209,11 @@ const benefits = [
           Ceritakan kesibukan dan tujuanmu. Tim HATESE akan merekomendasikan kelas yang paling cocok.
         </p>
         <div class="mt-8 flex flex-wrap justify-center gap-3">
-          <Button variant="primary" href="/daftar" iconRight>
+          <Button variant="primary" href={`${import.meta.env.BASE_URL}daftar`} iconRight>
             Konsultasi Sekarang
           </Button>
           <a
-            href="/karier"
+            href={`${import.meta.env.BASE_URL}karier`}
             class="group inline-flex items-center gap-2 px-6 py-[11px] text-sm font-medium text-paper bg-paper/10 border-b-[3px] border-paper/25 rounded-[--radius-button] transition-all duration-150 hover:bg-paper/15 active:translate-y-[2px] active:border-b-0"
           >
             Lihat Bidang Kerja

@@ -33,10 +33,16 @@ const variants = {
 };
 
 const classes = `${base} ${variants[variant]} ${className}`;
-const Tag = href ? 'a' : 'button';
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+const resolvedHref = href
+  ? (href.startsWith('/') && !href.startsWith(`${basePath}/`) && href !== `${basePath}/` && href !== basePath && !href.startsWith('//')
+      ? `${basePath}${href}`
+      : href)
+  : undefined;
+const Tag = resolvedHref ? 'a' : 'button';
 ---
 
-<Tag href={href} type={!href ? type : undefined} class={classes}>
+<Tag href={resolvedHref} type={!resolvedHref ? type : undefined} class={classes}>
   <slot />
   {iconRight && (
     <svg

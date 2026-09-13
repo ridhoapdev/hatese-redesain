@@ -22,7 +22,7 @@ const IconComponent = iconName
 ---
 
 <a
-  href={`/program/${slug}`}
+  href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/program/${slug}`}
   class="group flex flex-col bg-paper border border-mist rounded-[--radius-card] overflow-hidden shadow-sm transition-all duration-300 ease-out hover:border-indigo hover:shadow-xl hover:-translate-y-1.5 focus-visible:outline-2 focus-visible:outline-gold focus-visible:outline-offset-2"
 >
   <!-- Gambar -->

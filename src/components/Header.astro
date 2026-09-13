@@ -1,15 +1,21 @@
 ---
 // Header.astro — Streamlined High-UX Enterprise Navigation
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const homeUrl = `${base}/`;
+
 const navItems = [
-  { label: 'Beranda', href: '/' },
-  { label: 'Program', href: '/program' },
-  { label: 'Karier di Jepang', href: '/karier' },
-  { label: 'Kegiatan', href: '/kegiatan' },
-  { label: 'Kisah Alumni', href: '/kisah-alumni' },
-  { label: 'Tentang Kami', href: '/tentang' },
+  { label: 'Beranda', href: homeUrl },
+  { label: 'Program', href: `${base}/program` },
+  { label: 'Karier di Jepang', href: `${base}/karier` },
+  { label: 'Kegiatan', href: `${base}/kegiatan` },
+  { label: 'Kisah Alumni', href: `${base}/kisah-alumni` },
+  { label: 'Tentang Kami', href: `${base}/tentang` },
 ];
 
 const currentPath = Astro.url.pathname;
+const normalizePath = (p: string) => p.replace(/\/$/, '') || '/';
+const currentNorm = normalizePath(currentPath);
+const homeNorm = normalizePath(homeUrl);
 ---
 
 <header
@@ -22,7 +28,7 @@ const currentPath = Astro.url.pathname;
     <div class="flex items-center justify-between h-16 sm:h-20">
       
       <!-- Logo Gambar -->
-      <a href="/" class="flex items-center gap-2 group shrink-0 transition-opacity duration-200 hover:opacity-90" @click="mobileOpen = false">
+      <a href={homeUrl} class="flex items-center gap-2 group shrink-0 transition-opacity duration-200 hover:opacity-90" @click="mobileOpen = false">
         <img
           src="/images/logo-with-text1.webp"
           alt="Logo Hatese"
@@ -33,7 +39,9 @@ const currentPath = Astro.url.pathname;
       <!-- Desktop Navigation (Clean Minimalist Streamlined UX) -->
       <nav class="hidden lg:flex items-center gap-1 xl:gap-2" aria-label="Navigasi utama">
         {navItems.map((item) => {
-          const isActive = currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href));
+          const itemNorm = normalizePath(item.href);
+          const isHome = item.href === homeUrl || itemNorm === homeNorm;
+          const isActive = isHome ? currentNorm === itemNorm : currentNorm.startsWith(itemNorm);
           return (
             <a
               href={item.href}
@@ -56,7 +64,7 @@ const currentPath = Astro.url.pathname;
       <!-- CTA Button (Desktop) - Professional Clean & Tactile -->
       <div class="hidden lg:flex items-center gap-3 shrink-0">
         <a
-          href="/daftar"
+          href={`${base}/daftar`}
           class="group relative inline-flex items-center justify-center gap-2 bg-vermillion hover:bg-vermillion-hover text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-vermillion/20 hover:shadow-lg hover:shadow-vermillion/35 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-200"
         >
           <span>Konsultasi Sekarang</span>
@@ -115,7 +123,9 @@ const currentPath = Astro.url.pathname;
   >
     <nav class="space-y-1" aria-label="Navigasi mobile">
       {navItems.map((item) => {
-        const isActive = currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href));
+        const itemNorm = normalizePath(item.href);
+        const isHome = item.href === baseUrl || itemNorm === homeNorm;
+        const isActive = isHome ? currentNorm === itemNorm : currentNorm.startsWith(itemNorm);
         return (
           <a
             href={item.href}
@@ -135,7 +145,7 @@ const currentPath = Astro.url.pathname;
     </nav>
 
     <a
-      href="/daftar"
+      href={`${base}/daftar`}
       @click="mobileOpen = false"
       class="mt-2 flex items-center justify-center gap-2 w-full bg-vermillion hover:bg-vermillion-hover text-white px-5 py-3 rounded-xl text-sm font-bold shadow-md shadow-vermillion/20 active:scale-[0.98] transition-all"
     >
@@ -150,7 +160,7 @@ const currentPath = Astro.url.pathname;
 <!-- Mobile Fixed Bottom CTA Bar -->
 <div class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-paper/90 backdrop-blur-md border-t border-mist p-3 safe-area-inset-bottom shadow-lg">
   <a
-    href="/daftar"
+    href={`${base}/daftar`}
     class="group relative flex items-center justify-center gap-2 w-full bg-vermillion hover:bg-vermillion-hover text-white px-5 py-3 rounded-xl text-sm font-bold shadow-md shadow-vermillion/25 active:scale-[0.98] transition-all"
   >
     <span>Konsultasi Sekarang</span>

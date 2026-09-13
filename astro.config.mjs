@@ -5,7 +5,8 @@ import sitemap from '@astrojs/sitemap';
 import alpinejs from '@astrojs/alpinejs';
 
 export default defineConfig({
-  site: 'https://hatese.co.id', // Ganti dengan domain final
+  site: 'https://ridhoapdev.github.io', // Ganti dengan domain final
+  base: '/hatese-redesain',
   integrations: [
     sitemap(),
     alpinejs({ entrypoint: '/src/alpine.ts' }),

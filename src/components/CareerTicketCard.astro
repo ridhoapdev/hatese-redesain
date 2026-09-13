@@ -26,7 +26,7 @@ const quotaColor =
 ---
 
 <a
-  href={`/karier/${slug}`}
+  href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/karier/${slug}`}
   class="group relative flex flex-col bg-paper border border-mist rounded-[--radius-card] overflow-hidden transition-colors duration-150 hover:border-indigo focus-visible:outline-2 focus-visible:outline-gold focus-visible:outline-offset-2"
 >
   <!-- Accent line kiri saat hover -->
