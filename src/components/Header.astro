@@ -124,7 +124,7 @@ const homeNorm = normalizePath(homeUrl);
     <nav class="space-y-1" aria-label="Navigasi mobile">
       {navItems.map((item) => {
         const itemNorm = normalizePath(item.href);
-        const isHome = item.href === baseUrl || itemNorm === homeNorm;
+        const isHome = item.href === base || itemNorm === homeNorm;
         const isActive = isHome ? currentNorm === itemNorm : currentNorm.startsWith(itemNorm);
         return (
           <a
